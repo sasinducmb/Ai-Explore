@@ -27,6 +27,7 @@
                     <form id="mcq-form" action="{{ route('prompting.submit') }}" method="POST" class="space-y-6">
                         @csrf
                         <input type="hidden" name="question" value="1">
+                        <input type="hidden" name="action" id="action-input-1" value="submit">
                         <div>
                             <label class="block text-gray-700 font-medium mb-3 text-sm sm:text-base">Choose an AI Tool:</label>
                             <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-4" id="ai-tool-cards">
@@ -34,7 +35,9 @@
                                 $aiTools = ['Grok', 'Bard', 'Copilot', 'ChatGPT', 'Claude'];
                                 @endphp
                                 @foreach ($aiTools as $tool)
-                                <div class="ai-tool-card cursor-pointer p-4 border rounded-lg text-center bg-gray-50 hover:bg-blue-50 transition duration-300" data-tool="{{ $tool }}">
+                                <div class="ai-tool-card cursor-pointer p-4 border rounded-lg text
+
+-center bg-gray-50 hover:bg-blue-50 transition duration-300" data-tool="{{ $tool }}">
                                     <span class="font-medium text-gray-800 text-sm sm:text-base">{{ $tool }}</span>
                                 </div>
                                 @endforeach
@@ -47,6 +50,9 @@
                         <div class="flex space-x-4">
                             <button type="submit" class="w-full sm:w-auto px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 text-sm sm:text-base">
                                 Submit Answer
+                            </button>
+                            <button type="button" id="next-btn-1" class="w-full sm:w-auto px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition duration-300 text-sm sm:text-base" disabled>
+                                Next
                             </button>
                         </div>
                     </form>
@@ -62,6 +68,7 @@
                     <form id="prompt-form" action="{{ route('prompting.submit') }}" method="POST" class="space-y-6">
                         @csrf
                         <input type="hidden" name="question" value="2">
+                        <input type="hidden" name="action" id="action-input-2" value="submit">
                         <div>
                             <label class="block text-gray-700 font-medium mb-3 text-sm sm:text-base">Your Prompt:</label>
                             <textarea name="answer" id="prompt-input" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base" rows="4" required></textarea>
@@ -69,9 +76,14 @@
                             <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
                             @enderror
                         </div>
-                        <button type="submit" class="w-full sm:w-auto px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 text-sm sm:text-base">
-                            Submit Prompt
-                        </button>
+                        <div class="flex space-x-4">
+                            <button type="submit" class="w-full sm:w-auto px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 text-sm sm:text-base">
+                                Submit Prompt
+                            </button>
+                            <button type="button" id="next-btn-2" class="w-full sm:w-auto px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition duration-300 text-sm sm:text-base" disabled>
+                                Next
+                            </button>
+                        </div>
                     </form>
                 </div>
 
@@ -93,6 +105,7 @@
                     <form id="super-prompt-form" action="{{ route('prompting.submit') }}" method="POST" class="space-y-6">
                         @csrf
                         <input type="hidden" name="question" value="3">
+                        <input type="hidden" name="action" id="action-input-3" value="submit">
                         <div>
                             <label class="block text-gray-700 font-medium mb-3 text-sm sm:text-base">Choose a Topic:</label>
                             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4" id="topic-cards">
@@ -117,11 +130,16 @@
                             <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
                             @enderror
                         </div>
-                        <button type="submit" class="w-full sm:w-auto px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 text-sm sm:text-base">
-                            Submit Prompt
-                        </button>
+                        <div class="flex space-x-4">
+                            <button type="submit" class="w-full sm:w-auto px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 text-sm sm:text-base">
+                                Submit Prompt
+                            </button>
+                            <button type="button" id="finish-btn" class="w-full sm:w-auto px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300 text-sm sm:text-base">
+                                Finish
+                            </button>
+                        </div>
                     </form>
-                </div>
+                    a></div>
             </div>
         </div>
     </div>
@@ -148,11 +166,16 @@
     const topicCards = document.querySelectorAll('.topic-card');
     const answerInput = document.getElementById('answer-input');
     const topicInput = document.getElementById('topic-input');
+    const promptInput = document.getElementById('prompt-input');
+    const superPromptInput = document.getElementById('super-prompt-input');
     const popup = document.getElementById('result-popup');
     const closePopupBtn = document.getElementById('close-popup');
     const question1 = document.getElementById('question-1');
     const question2 = document.getElementById('question-2');
     const question3 = document.getElementById('question-3');
+    const nextBtn1 = document.getElementById('next-btn-1');
+    const nextBtn2 = document.getElementById('next-btn-2');
+    const finishBtn = document.getElementById('finish-btn');
 
     // Event listener for AI tool card selection (Question 1)
     aiCards.forEach(card => {
@@ -160,6 +183,7 @@
             aiCards.forEach(c => c.classList.remove('bg-blue-100', 'border-blue-500'));
             this.classList.add('bg-blue-100', 'border-blue-500');
             answerInput.value = this.dataset.tool;
+            nextBtn1.disabled = false; // Enable Next button when an AI tool is selected
         });
     });
 
@@ -169,7 +193,49 @@
             topicCards.forEach(c => c.classList.remove('bg-blue-100', 'border-blue-500'));
             this.classList.add('bg-blue-100', 'border-blue-500');
             topicInput.value = this.dataset.topic;
+            // Enable Submit button if both topic and prompt are filled
+            if (superPromptInput.value.trim()) {
+                document.querySelector('#super-prompt-form button[type="submit"]').disabled = false;
+            }
         });
+    });
+
+    // Enable Next button for Question 2 when textarea is filled
+    if (promptInput) {
+        promptInput.addEventListener('input', function () {
+            nextBtn2.disabled = this.value.trim() === '';
+        });
+    }
+
+    // Enable Submit button for Question 3 when both topic and prompt are filled
+    if (superPromptInput) {
+        superPromptInput.addEventListener('input', function () {
+            document.querySelector('#super-prompt-form button[type="submit"]').disabled = !(this.value.trim() && topicInput.value);
+        });
+    }
+
+    // Handle Next button for Question 1
+    nextBtn1.addEventListener('click', function () {
+        if (answerInput.value) {
+            document.getElementById('action-input-1').value = 'next';
+            document.getElementById('mcq-form').submit();
+        }
+    });
+
+    // Handle Next button for Question 2
+    nextBtn2.addEventListener('click', function () {
+        if (promptInput.value.trim()) {
+            document.getElementById('action-input-2').value = 'next';
+            document.getElementById('prompt-form').submit();
+        }
+    });
+
+    // Handle Finish button for Question 3
+    finishBtn.addEventListener('click', function () {
+        if (topicInput.value && superPromptInput.value.trim()) {
+            document.getElementById('action-input-3').value = 'finish';
+            document.getElementById('super-prompt-form').submit();
+        }
     });
 
     // Handle closing the popup
@@ -205,6 +271,8 @@
                     }
                 }
             }
+            // Disable Submit button if topic or prompt is missing
+            document.querySelector('#super-prompt-form button[type="submit"]').disabled = !(topicInput.value && superPromptInput.value.trim());
         }
     }
 </script>
