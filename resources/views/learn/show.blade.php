@@ -21,9 +21,10 @@
         @if (!empty($tool['youtubeUrl']))
         <div class="mt-8">
             <div class="aspect-w-16 aspect-h-9">
+                <!-- Embed YouTube Video by transforming URL -->
                 <iframe
                     class="w-full h-80 md:h-[450px] rounded-lg shadow"
-                    src="{{ str_replace('watch?v=', 'embed/', $tool['youtubeUrl']) }}"
+                    src="{{ 'https://www.youtube.com/embed/' . substr(parse_url($tool['youtubeUrl'], PHP_URL_PATH), 1) }}"
                     title="YouTube video player"
                     frameborder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
