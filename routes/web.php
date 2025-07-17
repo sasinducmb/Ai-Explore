@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\PromptingController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -34,3 +35,6 @@ Route::get('/chat-with-ai', function () {
 Route::get('lang/{locale}', [LanguageController::class, 'switch'])->name('lang.switch');
 
 Route::get('/learn-ai-tools/{id}', [LanguageController::class, 'show'])->name('ai-tools.show');
+
+Route::get('/prompting', [PromptingController::class, 'show'])->name('prompting.show');
+Route::post('/prompting/submit', [PromptingController::class, 'submit'])->name('prompting.submit');
