@@ -11,33 +11,35 @@
     <div class="max-w-7xl mx-auto text-center">
         <h2 class="text-3xl sm:text-4xl font-bold poppins text-gray-900 mb-4">Prompting Tool</h2>
         <p class="text-gray-600 font-medium poppins max-w-3xl mx-auto mb-8 sm:mb-12 text-sm sm:text-base">
-            Use text prompts to interact with AI and spark ideas. Explore creative ways to generate content, solve problems, or learn new concepts.
+            Use text prompts to interact with AI and spark ideas. Explore creative ways to generate content, solve
+            problems, or learn new concepts.
         </p>
 
         <div class="bg-white shadow-md shadow-blue-100 rounded-xl px-4 sm:px-6 py-6 border border-blue-200">
             <h3 class="font-semibold text-lg sm:text-xl text-gray-800 mb-4">AI Tool Challenge</h3>
             <p class="text-gray-600 mb-4 text-sm sm:text-base">
-                Children will engage with AI tools to answer fun questions. This activity lets them experience how different tools respond and helps them develop critical thinking.
+                Children will engage with AI tools to answer fun questions. This activity lets them experience how
+                different tools respond and helps them develop critical thinking.
             </p>
 
             <div class="max-w-2xl mx-auto">
                 <!-- Question 1: MCQ -->
                 <div id="question-1" class="{{ isset($currentQuestion) && $currentQuestion != 1 ? 'hidden' : '' }}">
-                    <h4 class="font-semibold text-base sm:text-lg text-gray-800 mb-4 text-left">🧠 Question 1: What is the prompting tool introduced by Google?</h4>
+                    <h4 class="font-semibold text-base sm:text-lg text-gray-800 mb-4 text-left">🧠 Question 1: What is
+                        the prompting tool introduced by Google?</h4>
                     <form id="mcq-form" action="{{ route('prompting.submit') }}" method="POST" class="space-y-6">
                         @csrf
                         <input type="hidden" name="question" value="1">
                         <input type="hidden" name="action" id="action-input-1" value="submit">
                         <div>
-                            <label class="block text-gray-700 font-medium mb-3 text-sm sm:text-base">Choose an AI Tool:</label>
+                            <label class="block text-gray-700 font-medium mb-3 text-sm sm:text-base">Choose an AI
+                                Tool:</label>
                             <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-4" id="ai-tool-cards">
                                 @php
                                 $aiTools = ['Grok', 'Bard', 'Copilot', 'ChatGPT', 'Claude'];
                                 @endphp
                                 @foreach ($aiTools as $tool)
-                                <div class="ai-tool-card cursor-pointer p-4 border rounded-lg text
-
--center bg-gray-50 hover:bg-blue-50 transition duration-300" data-tool="{{ $tool }}">
+                                <div class="ai-tool-card cursor-pointer p-4 border rounded-lg text-center bg-gray-50 hover:bg-blue-50 transition duration-300" data-tool="{{ $tool }}">
                                     <span class="font-medium text-gray-800 text-sm sm:text-base">{{ $tool }}</span>
                                 </div>
                                 @endforeach
@@ -47,11 +49,14 @@
                             <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
                             @enderror
                         </div>
-                        <div class="flex space-x-4">
-                            <button type="submit" class="w-full sm:w-auto px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 text-sm sm:text-base">
+                        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                            <button type="submit"
+                                    class="w-full sm:w-auto px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 text-sm sm:text-base">
                                 Submit Answer
                             </button>
-                            <button type="button" id="next-btn-1" class="w-full sm:w-auto px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition duration-300 text-sm sm:text-base" disabled>
+                            <button type="button" id="next-btn-1"
+                                    class="w-full sm:w-auto px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition duration-300 text-sm sm:text-base"
+                                    disabled>
                                 Next
                             </button>
                         </div>
@@ -59,28 +64,42 @@
                 </div>
 
                 <!-- Question 2: Reverse Prompt Builder -->
-                <div id="question-2" class="{{ isset($currentQuestion) && $currentQuestion == 2 ? '' : 'hidden' }}">
-                    <h4 class="font-semibold text-base sm:text-lg text-gray-800 mb-4 text-left">🧠 Question 2: Reverse Prompt Builder</h4>
+                <div id="question-2" class="{{ isset($currentQuestion) && $currentQuestion != 2 ? 'hidden' : '' }}">
+                    <h4 class="font-semibold text-base sm:text-lg text-gray-800 mb-4 text-left">🧠 Question 2: Reverse
+                        Prompt Builder</h4>
                     <div class="text-left text-gray-600 mb-4 text-sm sm:text-base">
-                        <p>"Electric vehicles, or EVs, are cars that use electricity instead of petrol or diesel. One of the biggest benefits of EVs is that they are better for the environment because they reduce air pollution. They are also quieter and need less maintenance. However, a disadvantage is that they can be expensive and may take a long time to charge. Some people also find it hard to find charging stations. Still, many believe EVs will become more popular in the future."</p>
-                        <p class="mt-4 font-medium">Instructions: Guess what prompt was used to generate that answer! Read the paragraph above, then think: What question could I ask an AI to get that kind of answer? Write your question and submit it.</p>
+                        <p>"Electric vehicles, or EVs, are cars that use electricity instead of petrol or diesel. One of
+                            the biggest benefits of EVs is that they are better for the environment because they reduce
+                            air pollution. They are also quieter and need less maintenance. However, a disadvantage is
+                            that they can be expensive and may take a long time to charge. Some people also find it hard
+                            to find charging stations. Still, many believe EVs will become more popular in the
+                            future."</p>
+                        <p class="mt-4 font-medium">Instructions: Guess what prompt was used to generate that answer!
+                            Read the paragraph above, then think: What question could I ask an AI to get that kind of
+                            answer? Write your question and submit it.</p>
                     </div>
                     <form id="prompt-form" action="{{ route('prompting.submit') }}" method="POST" class="space-y-6">
                         @csrf
                         <input type="hidden" name="question" value="2">
                         <input type="hidden" name="action" id="action-input-2" value="submit">
                         <div>
-                            <label class="block text-gray-700 font-medium mb-3 text-sm sm:text-base">Your Prompt:</label>
-                            <textarea name="answer" id="prompt-input" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base" rows="4" required></textarea>
+                            <label class="block text-gray-700 font-medium mb-3 text-sm sm:text-base">Your
+                                Prompt:</label>
+                            <textarea name="answer" id="prompt-input"
+                                      class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+                                      rows="4" required></textarea>
                             @error('answer')
                             <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
                             @enderror
                         </div>
-                        <div class="flex space-x-4">
-                            <button type="submit" class="w-full sm:w-auto px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 text-sm sm:text-base">
+                        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                            <button type="submit"
+                                    class="w-full sm:w-auto px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 text-sm sm:text-base">
                                 Submit Prompt
                             </button>
-                            <button type="button" id="next-btn-2" class="w-full sm:w-auto px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition duration-300 text-sm sm:text-base" disabled>
+                            <button type="button" id="next-btn-2"
+                                    class="w-full sm:w-auto px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition duration-300 text-sm sm:text-base"
+                                    disabled>
                                 Next
                             </button>
                         </div>
@@ -88,71 +107,192 @@
                 </div>
 
                 <!-- Question 3: Build a Super Question with AI -->
-                <div id="question-3" class="{{ isset($currentQuestion) && $currentQuestion == 3 ? '' : 'hidden' }}">
-                    <h4 class="font-semibold text-base sm:text-lg text-gray-800 mb-4 text-left">🧠 Question 3: Build a Super Question with AI</h4>
+                <div id="question-3" class="{{ isset($currentQuestion) && $currentQuestion != 3 ? 'hidden' : '' }}">
+                    <h4 class="font-semibold text-base sm:text-lg text-gray-800 mb-4 text-left">🧠 Question 3: Build a
+                        Super Question with AI</h4>
                     <div class="text-left text-gray-600 mb-4 text-sm sm:text-base">
-                        <p>In this creative task, you'll learn how to build a smart question with the help of AI. Start by selecting a topic, then improve your question step by step to make it clear and detailed.</p>
+                        <p>In this creative task, you'll learn how to build a smart question with the help of AI. Start
+                            by selecting a topic, then improve your question step by step to make it clear and
+                            detailed.</p>
                         <p class="mt-4 font-medium">Instructions:</p>
                         <ul class="list-disc pl-5">
                             <li>Select one of the topics below: animals, ocean, robot, or computers.</li>
                             <li>Start with a simple question about your topic (e.g., 'Tell me about animals').</li>
                             <li>Imagine asking an AI your question and how it responds.</li>
-                            <li>Improve your question to make it more detailed and clear based on the imagined response.</li>
+                            <li>Improve your question to make it more detailed and clear based on the imagined
+                                response.
+                            </li>
                             <li>Write your final improved prompt below and submit it.</li>
                             <li>Your score depends on how detailed and clear your final question is!</li>
                         </ul>
                     </div>
-                    <form id="super-prompt-form" action="{{ route('prompting.submit') }}" method="POST" class="space-y-6">
+                    <form id="super-prompt-form" action="{{ route('prompting.submit') }}" method="POST"
+                          class="space-y-6">
                         @csrf
                         <input type="hidden" name="question" value="3">
                         <input type="hidden" name="action" id="action-input-3" value="submit">
                         <div>
-                            <label class="block text-gray-700 font-medium mb-3 text-sm sm:text-base">Choose a Topic:</label>
+                            <label class="block text-gray-700 font-medium mb-3 text-sm sm:text-base">Choose a
+                                Topic:</label>
                             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4" id="topic-cards">
                                 @php
                                 $topics = ['animals', 'ocean', 'robot', 'computers'];
                                 @endphp
                                 @foreach ($topics as $topic)
-                                <div class="topic-card cursor-pointer p-4 border rounded-lg text-center bg-gray-50 hover:bg-blue-50 transition duration-300 {{ isset($selectedTopic) && $selectedTopic == $topic ? 'bg-blue-100 border-blue-500' : '' }}" data-topic="{{ $topic }}">
-                                    <span class="font-medium text-gray-800 text-sm sm:text-base">{{ ucfirst($topic) }}</span>
+                                <div
+                                    class="topic-card cursor-pointer p-4 border rounded-lg text-center bg-gray-50 hover:bg-blue-50 transition duration-300 {{ isset($selectedTopic) && $selectedTopic == $topic ? 'bg-blue-100 border-blue-500' : '' }}"
+                                    data-topic="{{ $topic }}">
+                                    <span
+                                        class="font-medium text-gray-800 text-sm sm:text-base">{{ ucfirst($topic) }}</span>
                                 </div>
                                 @endforeach
                             </div>
-                            <input type="hidden" name="topic" id="topic-input" value="{{ $selectedTopic ?? '' }}" required>
+                            <input type="hidden" name="topic" id="topic-input" value="{{ $selectedTopic ?? '' }}"
+                                   required>
                             @error('topic')
                             <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
                             @enderror
                         </div>
                         <div>
-                            <label class="block text-gray-700 font-medium mb-3 text-sm sm:text-base">Your Improved Prompt:</label>
-                            <textarea name="answer" id="super-prompt-input" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base" rows="4" required></textarea>
+                            <label class="block text-gray-700 font-medium mb-3 text-sm sm:text-base">Your Improved
+                                Prompt:</label>
+                            <textarea name="answer" id="super-prompt-input"
+                                      class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+                                      rows="4" required></textarea>
                             @error('answer')
                             <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
                             @enderror
                         </div>
-                        <div class="flex space-x-4">
-                            <button type="submit" class="w-full sm:w-auto px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 text-sm sm:text-base">
+                        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                            <button type="submit"
+                                    class="w-full sm:w-auto px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 text-sm sm:text-base">
                                 Submit Prompt
                             </button>
-                            <button type="button" id="finish-btn" class="w-full sm:w-auto px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300 text-sm sm:text-base">
+                            <button type="button" id="next-btn-3"
+                                    class="w-full sm:w-auto px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition duration-300 text-sm sm:text-base"
+                                    disabled>
+                                Next
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Question 4: Word Puzzle with Image -->
+                <div id="question-4" class="{{ isset($currentQuestion) && $currentQuestion != 4 ? 'hidden' : '' }}">
+                    <h4 class="font-semibold text-base sm:text-lg text-gray-800 mb-4 text-left">🧠 Question 4: Word Puzzle Challenge</h4>
+                    <div class="text-left text-gray-600 mb-4 text-sm sm:text-base">
+                        <p>Solve this word puzzle by entering the correct animal names based on the clues provided. Refer to the image below for the puzzle grid layout.</p>
+                        <p class="mt-4 font-medium">Instructions: Enter the answers for each clue in the corresponding text boxes. Use the 'Show Answer' buttons to reveal hints if needed. Submit your answers to check them.</p>
+                    </div>
+                    <div class="text-center mb-6">
+                        <img src="{{ asset('asset/img/puzzel.jpeg') }}" alt="Word Puzzle Grid"
+                             class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md"
+                    </div>
+                    <form id="puzzle-form" action="{{ route('prompting.submit') }}" method="POST" class="space-y-6">
+                        @csrf
+                        <input type="hidden" name="question" value="4">
+                        <input type="hidden" name="action" id="action-input-4" value="submit">
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-3 text-sm sm:text-base">Enter Answers for Each Clue:</label>
+                            <div id="puzzle-answers" class="space-y-4">
+                                <div class="flex items-center space-x-2">
+                                    <label class="block text-gray-600 text-sm sm:text-base w-1/3">Clue 1 (Down - Fastest land animal): </label>
+                                    <input type="text" name="answer[1]" value="{{ old('answer.1', isset($puzzleAnswers) ? $puzzleAnswers[1] ?? '' : '') }}" class="w-1/2 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base" maxlength="7" required>
+                                    <button type="button" id="show-answer-1" class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm">Show Answer</button>
+                                    <span id="hint-1" class="ml-2 text-green-600 hidden">CHEETAH</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <label class="block text-gray-600 text-sm sm:text-base w-1/3">Clue 2 (Down - Starts life as a tadpole): </label>
+                                    <input type="text" name="answer[2]" value="{{ old('answer.2', isset($puzzleAnswers) ? $puzzleAnswers[2] ?? '' : '') }}" class="w-1/2 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base" maxlength="4" required>
+                                    <button type="button" id="show-answer-2" class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm">Show Answer</button>
+                                    <span id="hint-2" class="ml-2 text-green-600 hidden">FROG</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <label class="block text-gray-600 text-sm sm:text-base w-1/3">Clue 3 (Down - Man's best friend): </label>
+                                    <input type="text" name="answer[3]" value="{{ old('answer.3', isset($puzzleAnswers) ? $puzzleAnswers[3] ?? '' : '') }}" class="w-1/2 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base" maxlength="3" required>
+                                    <button type="button" id="show-answer-3" class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm">Show Answer</button>
+                                    <span id="hint-3" class="ml-2 text-green-600 hidden">DOG</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <label class="block text-gray-600 text-sm sm:text-base w-1/3">Clue 4 (Across - Has black and white stripes): </label>
+                                    <input type="text" name="answer[4]" value="{{ old('answer.4', isset($puzzleAnswers) ? $puzzleAnswers[4] ?? '' : '') }}" class="w-1/2 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base" maxlength="5" required>
+                                    <button type="button" id="show-answer-4" class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm">Show Answer</button>
+                                    <span id="hint-4" class="ml-2 text-green-600 hidden">ZEBRA</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <label class="block text-gray-600 text-sm sm:text-base w-1/3">Clue 5 (Down - Large animals with a trunk): </label>
+                                    <input type="text" name="answer[5]" value="{{ old('answer.5', isset($puzzleAnswers) ? $puzzleAnswers[5] ?? '' : '') }}" class="w-1/2 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base" maxlength="8" required>
+                                    <button type="button" id="show-answer-5" class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm">Show Answer</button>
+                                    <span id="hint-5" class="ml-2 text-green-600 hidden">ELEPHANT</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <label class="block text-gray-600 text-sm sm:text-base w-1/3">Clue 6 (Across - Tallest land animal): </label>
+                                    <input type="text" name="answer[6]" value="{{ old('answer.6', isset($puzzleAnswers) ? $puzzleAnswers[6] ?? '' : '') }}" class="w-1/2 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base" maxlength="7" required>
+                                    <button type="button" id="show-answer-6" class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm">Show Answer</button>
+                                    <span id="hint-6" class="ml-2 text-green-600 hidden">GIRAFFE</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <label class="block text-gray-600 text-sm sm:text-base w-1/3">Clue 7 (Down - King of the jungle): </label>
+                                    <input type="text" name="answer[7]" value="{{ old('answer.7', isset($puzzleAnswers) ? $puzzleAnswers[7] ?? '' : '') }}" class="w-1/2 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base" maxlength="4" required>
+                                    <button type="button" id="show-answer-7" class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm">Show Answer</button>
+                                    <span id="hint-7" class="ml-2 text-green-600 hidden">LION</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <label class="block text-gray-600 text-sm sm:text-base w-1/3">Clue 8 (Across - Hopping Australian marsupial): </label>
+                                    <input type="text" name="answer[8]" value="{{ old('answer.8', isset($puzzleAnswers) ? $puzzleAnswers[8] ?? '' : '') }}" class="w-1/2 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base" maxlength="8" required>
+                                    <button type="button" id="show-answer-8" class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm">Show Answer</button>
+                                    <span id="hint-8" class="ml-2 text-green-600 hidden">KANGAROO</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <label class="block text-gray-600 text-sm sm:text-base w-1/3">Clue 9 (Down - Large animal with a horn): </label>
+                                    <input type="text" name="answer[9]" value="{{ old('answer.9', isset($puzzleAnswers) ? $puzzleAnswers[9] ?? '' : '') }}" class="w-1/2 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base" maxlength="5" required>
+                                    <button type="button" id="show-answer-9" class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm">Show Answer</button>
+                                    <span id="hint-9" class="ml-2 text-green-600 hidden">RHINO</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <label class="block text-gray-600 text-sm sm:text-base w-1/3">Clue 10 (Across - Likes to chase mice): </label>
+                                    <input type="text" name="answer[10]" value="{{ old('answer.10', isset($puzzleAnswers) ? $puzzleAnswers[10] ?? '' : '') }}" class="w-1/2 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base" maxlength="3" required>
+                                    <button type="button" id="show-answer-10" class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm">Show Answer</button>
+                                    <span id="hint-10" class="ml-2 text-green-600 hidden">CAT</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <label class="block text-gray-600 text-sm sm:text-base w-1/3">Clue 11 (Across - Like to roll around in the mud): </label>
+                                    <input type="text" name="answer[11]" value="{{ old('answer.11', isset($puzzleAnswers) ? $puzzleAnswers[11] ?? '' : '') }}" class="w-1/2 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base" maxlength="3" required>
+                                    <button type="button" id="show-answer-11" class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm">Show Answer</button>
+                                    <span id="hint-11" class="ml-2 text-green-600 hidden">PIG</span>
+                                </div>
+                            </div>
+                            @error('answer')
+                            <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                            <button type="submit"
+                                    class="w-full sm:w-auto px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 text-sm sm:text-base">
+                                Submit Puzzle
+                            </button>
+                            <button type="button" id="finish-btn"
+                                    class="w-full sm:w-auto px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300 text-sm sm:text-base">
                                 Finish
                             </button>
                         </div>
                     </form>
-                    a></div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
 <!-- Popup for result -->
-<div id="result-popup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center {{ isset($showPopup) && $showPopup ? '' : 'hidden' }}">
-    <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg text-center w-full max-w-xs sm:max-w-sm">
+<div id="result-popup"
+     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center {{ isset($showPopup) && $showPopup ? '' : 'hidden' }} z-50">
+    <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg text-center w-full max-w-xs sm:max-w-sm transform transition-all duration-300">
         <div id="result-icon" class="text-5xl sm:text-6xl mb-4">{{ isset($isCorrect) && $isCorrect ? '😊' : '😢' }}</div>
         <p id="result-message" class="text-base sm:text-lg font-medium text-gray-800">
             {{ $resultMessage ?? 'An error occurred. Please try again.' }}
         </p>
-        <button id="close-popup" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm sm:text-base">
+        <button id="close-popup"
+                class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm sm:text-base">
             Close
         </button>
     </div>
@@ -160,7 +300,7 @@
 
 @include('layout.footer')
 
-<!-- JavaScript for card selection, popup display, and question navigation -->
+<!-- JavaScript for card selection, popup display, question navigation, and hint toggling -->
 <script>
     const aiCards = document.querySelectorAll('.ai-tool-card');
     const topicCards = document.querySelectorAll('.topic-card');
@@ -173,9 +313,13 @@
     const question1 = document.getElementById('question-1');
     const question2 = document.getElementById('question-2');
     const question3 = document.getElementById('question-3');
+    const question4 = document.getElementById('question-4');
     const nextBtn1 = document.getElementById('next-btn-1');
     const nextBtn2 = document.getElementById('next-btn-2');
+    const nextBtn3 = document.getElementById('next-btn-3');
     const finishBtn = document.getElementById('finish-btn');
+    const showAnswerButtons = document.querySelectorAll('#question-4 [id^="show-answer-"]');
+    const hintElements = document.querySelectorAll('#question-4 [id^="hint-"]');
 
     // Event listener for AI tool card selection (Question 1)
     aiCards.forEach(card => {
@@ -183,7 +327,7 @@
             aiCards.forEach(c => c.classList.remove('bg-blue-100', 'border-blue-500'));
             this.classList.add('bg-blue-100', 'border-blue-500');
             answerInput.value = this.dataset.tool;
-            nextBtn1.disabled = false; // Enable Next button when an AI tool is selected
+            nextBtn1.disabled = false;
         });
     });
 
@@ -193,7 +337,6 @@
             topicCards.forEach(c => c.classList.remove('bg-blue-100', 'border-blue-500'));
             this.classList.add('bg-blue-100', 'border-blue-500');
             topicInput.value = this.dataset.topic;
-            // Enable Submit button if both topic and prompt are filled
             if (superPromptInput.value.trim()) {
                 document.querySelector('#super-prompt-form button[type="submit"]').disabled = false;
             }
@@ -211,8 +354,18 @@
     if (superPromptInput) {
         superPromptInput.addEventListener('input', function () {
             document.querySelector('#super-prompt-form button[type="submit"]').disabled = !(this.value.trim() && topicInput.value);
+            nextBtn3.disabled = this.value.trim() === '';
         });
     }
+
+    // Toggle hint visibility for Question 4
+    showAnswerButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const hintId = this.id.replace('show-answer-', 'hint-');
+            const hint = document.getElementById(hintId);
+            hint.classList.toggle('hidden');
+        });
+    });
 
     // Handle Next button for Question 1
     nextBtn1.addEventListener('click', function () {
@@ -230,11 +383,28 @@
         }
     });
 
-    // Handle Finish button for Question 3
-    finishBtn.addEventListener('click', function () {
-        if (topicInput.value && superPromptInput.value.trim()) {
-            document.getElementById('action-input-3').value = 'finish';
+    // Handle Next button for Question 3
+    nextBtn3.addEventListener('click', function () {
+        if (superPromptInput.value.trim() && topicInput.value) {
+            document.getElementById('action-input-3').value = 'next';
             document.getElementById('super-prompt-form').submit();
+        }
+    });
+
+    // Handle Finish button for Question 4
+    finishBtn.addEventListener('click', function () {
+        const inputs = document.querySelectorAll('#puzzle-answers input');
+        let allFilled = true;
+        inputs.forEach(input => {
+            if (!input.value.trim()) {
+                allFilled = false;
+            }
+        });
+        if (allFilled) {
+            document.getElementById('action-input-4').value = 'finish';
+            document.getElementById('puzzle-form').submit();
+        } else {
+            alert('Please fill in all answers before finishing.');
         }
     });
 
@@ -244,7 +414,7 @@
     });
 
     // Show popup and set correct question on page load
-    window.onload = function() {
+    window.onload = function () {
         if ({{ isset($showPopup) && $showPopup ? 'true' : 'false' }}) {
             popup.classList.remove('hidden');
         }
@@ -253,15 +423,17 @@
             question1.classList.remove('hidden');
             question2.classList.add('hidden');
             question3.classList.add('hidden');
+            question4.classList.add('hidden');
         } else if ({{ isset($currentQuestion) ? $currentQuestion : 1 }} == 2) {
             question1.classList.add('hidden');
             question2.classList.remove('hidden');
             question3.classList.add('hidden');
+            question4.classList.add('hidden');
         } else if ({{ isset($currentQuestion) ? $currentQuestion : 1 }} == 3) {
             question1.classList.add('hidden');
             question2.classList.add('hidden');
             question3.classList.remove('hidden');
-            // Restore selected topic if available
+            question4.classList.add('hidden');
             if ({{ isset($selectedTopic) ? 'true' : 'false' }}) {
                 const selectedTopic = "{{ $selectedTopic ?? '' }}";
                 if (selectedTopic) {
@@ -271,10 +443,51 @@
                     }
                 }
             }
-            // Disable Submit button if topic or prompt is missing
             document.querySelector('#super-prompt-form button[type="submit"]').disabled = !(topicInput.value && superPromptInput.value.trim());
+        } else if ({{ isset($currentQuestion) ? $currentQuestion : 1 }} == 4) {
+            question1.classList.add('hidden');
+            question2.classList.add('hidden');
+            question3.classList.add('hidden');
+            question4.classList.remove('hidden');
+            if ({{ isset($puzzleAnswers) && $puzzleAnswers ? 'true' : 'false' }}) {
+                const savedAnswers = {{ json_encode($puzzleAnswers) ?? '[]' }};
+                document.querySelectorAll('#puzzle-answers input').forEach((input, index) => {
+                    if (savedAnswers[index + 1]) {
+                        input.value = savedAnswers[index + 1];
+                    }
+                });
+            }
         }
     }
 </script>
+
+<style>
+    /* Inline CSS for additional styling adjustments */
+    .hidden {
+        display: none !important;
+    }
+    @media (max-width: 640px) {
+        .flex-col {
+            flex-direction: column !important;
+        }
+        .space-x-4 {
+            space-x-0 !important;
+        }
+        .w-1/3, .w-1/2 {
+        width: 100% !important;
+    }
+        #puzzle-answers .flex {
+            flex-direction: column;
+            align-items: flex-start;
+            space-y-2;
+        }
+        #puzzle-answers input {
+            margin-top: 0.5rem;
+        }
+        #puzzle-answers button {
+            margin-top: 0.5rem;
+        }
+    }
+</style>
 
 @endsection
