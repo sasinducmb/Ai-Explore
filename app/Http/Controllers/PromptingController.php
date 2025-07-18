@@ -20,7 +20,6 @@ class PromptingController extends Controller
         $resultMessage = null;
         $currentQuestion = $question;
         $selectedTopic = $request->input('topic', null);
-        $puzzleAnswers = $request->input('answer', []);
 
         if ($action === 'next') {
             // Move to the next question without validation
@@ -29,13 +28,11 @@ class PromptingController extends Controller
             } elseif ($question == 2) {
                 $currentQuestion = 3;
             } elseif ($question == 3) {
-                $currentQuestion = 4;
-            } elseif ($question == 4) {
-                $currentQuestion = 4; // Stay on Question 4 if "next" is clicked (though not applicable)
+                $currentQuestion = 3; // Stay on Question 3 if "next" is clicked (though not applicable)
             }
         } elseif ($action === 'finish') {
             // Handle finish action (e.g., redirect to a results page)
-            return redirect()->route('prompting.results');
+            return redirect()->route('prompting.results'); // Assuming a 'prompting.results' route exists
         } else {
             // Handle submit action with validation
             if ($question == 1) {
@@ -158,7 +155,7 @@ class PromptingController extends Controller
 
                     if ($isCorrect) {
                         $resultMessage = "Correct! Your improved prompt is clear, detailed, and relevant to '$selectedTopic'! Found topic keywords: " . implode(', ', $foundTopicKeywords);
-                        $currentQuestion = 4;
+                        $currentQuestion = 3;
                     } else {
                         $suggestions = [];
                         if (!$hasTopic) {
@@ -185,54 +182,6 @@ class PromptingController extends Controller
                     $isCorrect = false;
                     $currentQuestion = 3;
                 }
-            } elseif ($question == 4) {
-                // Question 4: Word Puzzle with Text Inputs
-                $request->validate([
-                    'answer' => 'required|array',
-                    'answer.*' => 'required|string',
-                ], [
-                    'answer.*.required' => 'All puzzle answers are required.',
-                ]);
-
-                Log::info('Submitted puzzle answers for Question 4: ' . json_encode($puzzleAnswers));
-
-                try {
-                    // Define correct answers for the puzzle
-                    $correctAnswers = [
-                        '1' => 'CHEETAH',
-                        '2' => 'FROG',
-                        '3' => 'DOG',
-                        '4' => 'ZEBRA',
-                        '5' => 'ELEPHANT',
-                        '6' => 'GIRAFFE',
-                        '7' => 'LION',
-                        '8' => 'KANGAROO',
-                        '9' => 'RHINO',
-                        '10' => 'CAT',
-                        '11' => 'PIG'
-                    ];
-
-                    $isCorrect = true;
-                    $incorrectAnswers = [];
-
-                    foreach ($puzzleAnswers as $clueNum => $answer) {
-                        $userAnswer = strtoupper(trim($answer));
-                        if ($userAnswer !== $correctAnswers[$clueNum]) {
-                            $isCorrect = false;
-                            $incorrectAnswers[] = "Clue $clueNum: Expected {$correctAnswers[$clueNum]}, got $userAnswer";
-                        }
-                    }
-
-                    if ($isCorrect) {
-                        $resultMessage = 'Correct! You solved the word puzzle perfectly!';
-                    } else {
-                        $resultMessage = 'Some answers are incorrect. Please try again. Issues: ' . implode(', ', $incorrectAnswers);
-                    }
-                } catch (\Exception $e) {
-                    Log::error('Unexpected error: ' . $e->getMessage());
-                    $resultMessage = 'An error occurred while checking the puzzle. Please try again.';
-                    $isCorrect = false;
-                }
             }
         }
 
@@ -242,7 +191,6 @@ class PromptingController extends Controller
             'resultMessage' => $resultMessage,
             'currentQuestion' => $currentQuestion,
             'selectedTopic' => $selectedTopic,
-            'puzzleAnswers' => $puzzleAnswers,
         ]);
     }
 

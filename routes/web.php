@@ -3,6 +3,7 @@
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\PromptingController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DesignController;
 
 Route::get('/', function () {
     return view('index');
@@ -39,3 +40,10 @@ Route::get('/learn-ai-tools/{id}', [LanguageController::class, 'show'])->name('a
 Route::get('/prompting', [PromptingController::class, 'show'])->name('prompting.show');
 Route::post('/prompting/submit', [PromptingController::class, 'submit'])->name('prompting.submit');
 Route::get('/prompting/results', [PromptingController::class, 'results'])->name('prompting.results');
+
+
+
+
+Route::get('/design-tools', [DesignController::class, 'show'])->name('design.tools');
+Route::post('/design-tools/submit', [DesignController::class, 'submit'])->name('design.submit');
+Route::get('/design-results', [DesignController::class, 'results'])->name('design.results');

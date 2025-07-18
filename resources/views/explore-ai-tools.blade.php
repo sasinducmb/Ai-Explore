@@ -1,11 +1,10 @@
 @extends('layout.app')
+
 @section('title')
 {{ __('Explore AI Tools') }}
 @endsection
 
 @section('content')
-<!-- Background Gradient Layer -->
-
 <!-- Navigation -->
 @include('layout.nav')
 
@@ -32,14 +31,14 @@
             'desc' => 'Use text prompts to interact with AI and spark ideas.',
             ],
             [
-            'id'=>2,
+            'id' => 2,
             'img' => asset('asset/img/explore/2.png'),
             'alt' => 'Design Tools',
             'title' => 'Design Tools',
             'desc' => 'Create visuals, layouts, and artwork with the help of AI.',
             ],
             [
-            'id'=>3,
+            'id' => 3,
             'img' => asset('asset/img/explore/4.png'),
             'alt' => 'Funny Activities',
             'title' => 'Funny Activities',
@@ -51,7 +50,7 @@
             <!-- First Card -->
             @foreach ($aiTools as $index => $tool)
             @if ($index < 2)
-            <a href="{{ $tool['id'] === 1 ? route('prompting.show') : '#' }}"
+            <a href="{{ $tool['id'] === 1 ? route('prompting.show') : route('design.tools') }}"
                class="block {{ $tool['id'] === 1 ? 'hover:cursor-pointer' : 'hover:cursor-not-allowed' }}">
                 <div class="flex items-center bg-white shadow-md shadow-blue-100 rounded-xl px-6 py-6 hover:shadow-lg hover:shadow-blue-200 transition border border-blue-200 transition-all duration-300 ease-in-out">
                     <img src="{{ $tool['img'] }}" alt="{{ $tool['alt'] }}"
