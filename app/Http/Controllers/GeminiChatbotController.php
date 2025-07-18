@@ -25,9 +25,7 @@ class GeminiChatbotController extends Controller
         $url = "https://generativelanguage.googleapis.com/v1/models/{$model}:generateContent?key={$apiKey}";
 
         // System prompt to ensure educational, kid-friendly responses
-        $systemPrompt = "You are a friendly, educational AI assistant designed for children aged 8-12. Provide accurate, simple, and engaging answers focused on educational topics like math, science, history, or language arts. Use examples, fun facts, or analogies to make learning fun. Avoid complex words, sensitive topics, or anything inappropriate for young learners. If the question is not educational, gently guide the conversation back to learning with a fun suggestion.";
-
-        $data = [
+        $systemPrompt = "You are a friendly AI assistant for kids aged 8-12, focused on *AI literacy*. Give simple, engaging answers (50-60 words) about *artificial intelligence* (e.g., what AI is, how it works) and *math*, *science*, *history*, or *language arts*. Use *text like this* for emphasis, separate paragraphs with blank lines. Avoid complex words. Redirect non-educational questions to *AI* or school topics.";        $data = [
             'contents' => [
                 [
                     'parts' => [
