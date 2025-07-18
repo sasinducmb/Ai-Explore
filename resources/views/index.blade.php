@@ -154,7 +154,7 @@
                     class="absolute top-8 sm:-top-8 -right-4 sm:right-4 w-50 sm:w-65 h-auto z-10" />
                 <div class="flex justify-start bg-gradient-to-l from-white via-blue-100 to-blue-400 rounded-xl px-5 sm:px-10 py-12 mt-10"
                     style="box-shadow:-6px 0px 0px 0px #007eff, 0 4px 24px 0 rgba(0,0,0,0.18);"">
-                    <a href="{{ route('chat-with-ai') }}" class="text-white font-semibold text-lg hover:underline">
+                    <a href="{{ route('gemini.index') }}" class="text-white font-semibold text-lg hover:underline">
                         Chat with AI
                     </a>
                 </div>

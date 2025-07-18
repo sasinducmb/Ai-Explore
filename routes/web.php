@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\GeminiChatbotController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\PromptingController;
 use Illuminate\Support\Facades\Route;
@@ -47,3 +48,7 @@ Route::get('/prompting/results', [PromptingController::class, 'results'])->name(
 Route::get('/design-tools', [DesignController::class, 'show'])->name('design.tools');
 Route::post('/design-tools/submit', [DesignController::class, 'submit'])->name('design.submit');
 Route::get('/design-results', [DesignController::class, 'results'])->name('design.results');
+
+
+Route::get('/gemini', [GeminiChatbotController::class, 'index'])->name('gemini.index');
+Route::post('/gemini/chat', [GeminiChatbotController::class, 'chatSimple'])->name('gemini.chat.send');
