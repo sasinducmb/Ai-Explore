@@ -39,9 +39,7 @@
                                 $aiTools = ['Grok', 'Bard', 'Copilot', 'ChatGPT', 'Claude'];
                                 @endphp
                                 @foreach ($aiTools as $tool)
-                                <div class="ai-tool-card cursor-pointer p-4 border rounded-lg text
-
--center bg-gray-50 hover:bg-blue-50 transition duration-300" data-tool="{{ $tool }}">
+                                <div class="ai-tool-card cursor-pointer p-4 border rounded-lg text-center bg-gray-50 hover:bg-blue-50 transition duration-300" data-tool="{{ $tool }}">
                                     <span class="font-medium text-gray-800 text-sm sm:text-base">{{ $tool }}</span>
                                 </div>
                                 @endforeach
@@ -122,8 +120,7 @@
                             <li>Start with a simple question about your topic (e.g., 'Tell me about animals').</li>
                             <li>Imagine asking an AI your question and how it responds.</li>
                             <li>Improve your question to make it more detailed and clear based on the imagined
-                                response.
-                            </li>
+                                response.</li>
                             <li>Write your final improved prompt below and submit it.</li>
                             <li>Your score depends on how detailed and clear your final question is!</li>
                         </ul>
@@ -282,68 +279,39 @@
         popup.classList.add('hidden');
     });
 
-    // Show popup and set correct question on page load
+    // Fixed JavaScript for question navigation
     window.onload = function () {
-        if ({{
-            isset($showPopup) && $showPopup ? 'true' : 'false'
-        }
-    })
-        {
+        // Show popup if needed
+        if ({{ isset($showPopup) && $showPopup ? 'true' : 'false' }}) {
             popup.classList.remove('hidden');
         }
+
         // Ensure correct question is displayed based on server state
-        if ({{
-            isset($currentQuestion) ? $currentQuestion : 1
-        }
-    } ==
-        1
-    )
-        {
+        const currentQuestion = {{ isset($currentQuestion) ? $currentQuestion : 1 }};
+        if (currentQuestion == 1) {
             question1.classList.remove('hidden');
             question2.classList.add('hidden');
             question3.classList.add('hidden');
-        }
-    else
-        if ({{
-            isset($currentQuestion) ? $currentQuestion : 1
-        }
-    } ==
-        2
-    )
-        {
+        } else if (currentQuestion == 2) {
             question1.classList.add('hidden');
             question2.classList.remove('hidden');
             question3.classList.add('hidden');
-        }
-    else
-        if ({{
-            isset($currentQuestion) ? $currentQuestion : 1
-        }
-    } ==
-        3
-    )
-        {
+        } else if (currentQuestion == 3) {
             question1.classList.add('hidden');
             question2.classList.add('hidden');
             question3.classList.remove('hidden');
             // Restore selected topic if available
-            if ({{
-                isset($selectedTopic) ? 'true' : 'false'
-            }
-        })
-            {
-                const selectedTopic = "{{ $selectedTopic ?? '' }}";
-                if (selectedTopic) {
-                    const selectedCard = document.querySelector(`.topic-card[data-topic="${selectedTopic}"]`);
-                    if (selectedCard) {
-                        selectedCard.classList.add('bg-blue-100', 'border-blue-500');
-                    }
+            const selectedTopic = "{{ $selectedTopic ?? '' }}";
+            if (selectedTopic) {
+                const selectedCard = document.querySelector(`.topic-card[data-topic="${selectedTopic}"]`);
+                if (selectedCard) {
+                    selectedCard.classList.add('bg-blue-100', 'border-blue-500');
                 }
             }
             // Disable Submit button if topic or prompt is missing
             document.querySelector('#super-prompt-form button[type="submit"]').disabled = !(topicInput.value && superPromptInput.value.trim());
         }
-    }
+    };
 </script>
 
 @endsection

@@ -19,7 +19,7 @@ class PromptingController extends Controller
             $this->languageClient = new LanguageServiceClient();
         } catch (\Exception $e) {
             Log::error('Failed to initialize Google Cloud NLP client: ' . $e->getMessage());
-            $this->languageClient = null; // Fallback to existing logic if initialization fails
+            $this->languageClient = null; // Fallback to keyword-based logic if initialization fails
         }
     }
 
@@ -40,11 +40,11 @@ class PromptingController extends Controller
         if ($action === 'next') {
             // Move to the next question without validation
             if ($question == 1) {
-                $currentQuestion = 2;
+                $currentQuestion = 2; // Fixed typo: 'intestine' to 'Question'
             } elseif ($question == 2) {
                 $currentQuestion = 3;
             } elseif ($question == 3) {
-                $currentQuestion = 3;
+                $currentQuestion = 3; // Stay on Question 3
             }
         } elseif ($action === 'finish') {
             // Handle finish action
@@ -52,7 +52,6 @@ class PromptingController extends Controller
         } else {
             // Handle submit action with validation
             if ($question == 1) {
-                // Question 1: MCQ about Google's prompting tool
                 $request->validate([
                     'answer' => 'required|string|in:Grok,Bard,Copilot,ChatGPT,Claude',
                 ]);
@@ -60,7 +59,6 @@ class PromptingController extends Controller
                 $resultMessage = $isCorrect ? 'Correct! Great job!' : 'Oops, that\'s incorrect. Try again!';
                 $currentQuestion = $isCorrect ? 2 : 1;
             } elseif ($question == 2) {
-                // Question 2: Reverse Prompt Builder with Google Cloud NLP
                 $request->validate([
                     'answer' => 'required|string|max:5000',
                 ]);
@@ -69,11 +67,10 @@ class PromptingController extends Controller
 
                 try {
                     if ($this->languageClient) {
-                        // Use Google Cloud NLP for analysis
                         $document = new Document();
                         $document->setContent($request->answer)->setType(Type::PLAIN_TEXT);
 
-                        // Perform entity analysis to check for relevant terms
+                        // Entity analysis
                         $entityResponse = $this->languageClient->analyzeEntities($document);
                         $entities = $entityResponse->getEntities();
 
@@ -85,17 +82,17 @@ class PromptingController extends Controller
                             }
                         }
 
-                        // Perform sentiment analysis to ensure neutral or positive tone
+                        // Sentiment analysis
                         $sentimentResponse = $this->languageClient->analyzeSentiment($document);
                         $sentiment = $sentimentResponse->getDocumentSentiment()->getScore();
 
-                        // Check for question-like structure using syntax analysis
+                        // Syntax analysis for question pattern
                         $syntaxResponse = $this->languageClient->analyzeSyntax($document);
                         $tokens = $syntaxResponse->getTokens();
                         $hasQuestionPattern = false;
                         foreach ($tokens as $token) {
-                            if (in_array(strtolower($token->getText()->getContent()), ['what', 'how', 'why', 'explain', 'describe']) ||
-                                $token->getText()->getContent() === '?') {
+                            $text = strtolower($token->getText()->getContent());
+                            if (in_array($text, ['what', 'how', 'why', 'explain', 'describe']) || $text === '?') {
                                 $hasQuestionPattern = true;
                                 break;
                             }
@@ -121,7 +118,7 @@ class PromptingController extends Controller
                             $currentQuestion = 2;
                         }
                     } else {
-                        // Fallback to original keyword-based logic if NLP client is unavailable
+                        // Fallback to original keyword-based logic
                         $requiredKeywords = [
                             'advantages', 'disadvantages', 'benefits', 'drawbacks',
                             'pollution', 'environment', 'charging', 'electric',
@@ -137,13 +134,16 @@ class PromptingController extends Controller
                             }
                         }
 
-                        $hasQuestionPattern = (
-                            strpos($textLower, 'what') !== false ||
+                        // Simplified question pattern check
+                        $textLower = strtolower($request->answer);
+                        $hasQuestionPattern = false;
+                        if (strpos($textLower, 'what') !== false ||
                             strpos($textLower, 'explain') !== false ||
                             strpos($textLower, 'tell') !== false ||
                             strpos($textLower, 'describe') !== false ||
-                            strpos($textLower, '?') !== false
-                        );
+                            strpos($textLower, '?') !== false) {
+                            $hasQuestionPattern = true;
+                        }
 
                         $uniqueKeywords = array_unique($foundKeywords);
                         $isCorrect = count($uniqueKeywords) >= 2 && $hasQuestionPattern;
@@ -170,7 +170,6 @@ class PromptingController extends Controller
                     $currentQuestion = 2;
                 }
             } elseif ($question == 3) {
-                // Question 3: Topic-based prompt with Google Cloud NLP
                 $request->validate([
                     'topic' => 'required|string|in:animals,ocean,robot,computers',
                     'answer' => 'required|string|max:5000',
@@ -180,11 +179,10 @@ class PromptingController extends Controller
 
                 try {
                     if ($this->languageClient) {
-                        // Use Google Cloud NLP for analysis
                         $document = new Document();
                         $document->setContent($request->answer)->setType(Type::PLAIN_TEXT);
 
-                        // Entity analysis to check topic relevance
+                        // Entity analysis
                         $entityResponse = $this->languageClient->analyzeEntities($document);
                         $entities = $entityResponse->getEntities();
 
@@ -204,7 +202,7 @@ class PromptingController extends Controller
                             }
                         }
 
-                        // Syntax analysis for clarity and specificity
+                        // Syntax analysis
                         $syntaxResponse = $this->languageClient->analyzeSyntax($document);
                         $tokens = $syntaxResponse->getTokens();
 
@@ -256,7 +254,7 @@ class PromptingController extends Controller
                             $currentQuestion = 3;
                         }
                     } else {
-                        // Fallback to original logic if NLP client is unavailable
+                        // Fallback to original keyword-based logic
                         $textLower = strtolower($request->answer);
                         $selectedTopic = $request->input('topic');
                         $clarityKeywords = ['explain', 'describe', 'what', 'how', 'why', 'details', 'example', 'specific'];
@@ -280,6 +278,16 @@ class PromptingController extends Controller
 
                         $clarityCount = 0;
                         $specificityCount = 0;
+                        $hasQuestionPattern = false;
+                        if (strpos($textLower, 'what') !== false ||
+                            strpos($textLower, 'how') !== false ||
+                            strpos($textLower, 'why') !== false ||
+                            strpos($textLower, 'explain') !== false ||
+                            strpos($textLower, 'describe') !== false ||
+                            strpos($textLower, '?') !== false) {
+                            $hasQuestionPattern = true;
+                        }
+
                         foreach ($clarityKeywords as $keyword) {
                             if (strpos($textLower, $keyword) !== false) {
                                 $clarityCount++;
@@ -290,15 +298,6 @@ class PromptingController extends Controller
                                 $specificityCount++;
                             }
                         }
-
-                        $hasQuestionPattern = (
-                            strpos($textLower, 'what') !== false ||
-                            strpos($textLower, 'how') !== false ||
-                            strpos($textLower, 'why') !== false ||
-                            strpos($textLower, 'explain') !== false ||
-                            strpos($textLower, 'describe') !== false ||
-                            strpos($textLower, '?') !== false
-                        );
 
                         $isCorrect = $hasTopic && $hasEnoughTopicKeywords && $clarityCount >= 2 && $specificityCount >= 1 && $hasQuestionPattern;
 
