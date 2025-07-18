@@ -112,7 +112,7 @@
         function addBotMessage(message) {
             chatBox.append(`
                 <div class="message bg-blue-100 text-gray-800 rounded-2xl p-4 mb-4 max-w-[70%] mr-auto rounded-bl-none text-lg">
-                    <strong>Gemini:</strong> ${message}
+                    <strong>AI Explorer:</strong> ${message}
                 </div>
             `);
             scrollToBottom();
