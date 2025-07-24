@@ -184,6 +184,11 @@
      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center {{ isset($showPopup) && $showPopup ? '' : 'hidden' }}">
     <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg text-center w-full max-w-xs sm:max-w-sm">
         <div id="result-icon" class="text-5xl sm:text-6xl mb-4">{{ isset($isCorrect) && $isCorrect ? '😊' : '😢' }}</div>
+        <div id="result-icon" class="mb-4">
+            <video autoplay loop muted playsinline class="w-full h-auto max-h-40 mx-auto">
+                    <source src="{{ asset('img/svg/happy.mp4') }}" type="video/mp4">
+            </video>
+        </div>
         <p id="result-message" class="text-base sm:text-lg font-medium text-gray-800">
             {{ $resultMessage ?? 'An error occurred. Please try again.' }}
         </p>
@@ -193,6 +198,8 @@
         </button>
     </div>
 </div>
+
+
 
 @include('layout.footer')
 

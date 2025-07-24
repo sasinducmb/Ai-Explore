@@ -34,6 +34,7 @@ class PromptingController extends Controller
         $action = $request->input('action', 'submit');
         $isCorrect = false;
         $resultMessage = null;
+        $imoji = null;
         $currentQuestion = $question;
         $selectedTopic = $request->input('topic', null);
 
@@ -57,6 +58,7 @@ class PromptingController extends Controller
                 ]);
                 $isCorrect = $request->answer === 'Bard';
                 $resultMessage = $isCorrect ? 'Correct! Great job!' : 'Oops, that\'s incorrect. Try again!';
+                $imoji = $isCorrect ? 'happy' : 'sad';
                 $currentQuestion = $isCorrect ? 2 : 1;
             } elseif ($question == 2) {
                 $request->validate([
@@ -102,6 +104,7 @@ class PromptingController extends Controller
 
                         if ($isCorrect) {
                             $resultMessage = 'Correct! Your prompt is relevant and well-structured! Found entities: ' . implode(', ', array_unique($foundEntities));
+                            $imoji =  'happy';
                             $currentQuestion = 3;
                         } else {
                             $suggestions = [];
@@ -115,6 +118,7 @@ class PromptingController extends Controller
                                 $suggestions[] = 'use a neutral or positive tone';
                             }
                             $resultMessage = 'Your prompt needs improvement. Try to: ' . implode(', ', $suggestions) . '. Found entities: ' . (empty($foundEntities) ? 'none' : implode(', ', array_unique($foundEntities)));
+                            $imoji = 'moderate';
                             $currentQuestion = 2;
                         }
                     } else {
@@ -150,6 +154,7 @@ class PromptingController extends Controller
 
                         if ($isCorrect) {
                             $resultMessage = 'Correct! Your prompt is good! Found relevant keywords: ' . implode(', ', $uniqueKeywords);
+                            $imoji = 'happy';
                             $currentQuestion = 3;
                         } else {
                             $suggestions = [];
@@ -160,12 +165,14 @@ class PromptingController extends Controller
                                 $suggestions[] = 'make it more like a question or request';
                             }
                             $resultMessage = 'Your prompt needs improvement. Try to: ' . implode(' and ', $suggestions) . '. Found keywords: ' . (empty($uniqueKeywords) ? 'none' : implode(', ', $uniqueKeywords));
+                            $imoji = 'moderate';
                             $currentQuestion = 2;
                         }
                     }
                 } catch (\Exception $e) {
                     Log::error('Unexpected error in Question 2: ' . $e->getMessage());
                     $resultMessage = 'An error occurred while analyzing your prompt. Please try again.';
+                    $imoji =  'sad';
                     $isCorrect = false;
                     $currentQuestion = 2;
                 }
@@ -232,6 +239,7 @@ class PromptingController extends Controller
 
                         if ($isCorrect) {
                             $resultMessage = "Correct! Your improved prompt is clear, detailed, and relevant to '$selectedTopic'! Found entities: " . implode(', ', array_unique($foundEntities));
+                            $imoji =  'happy';
                             $currentQuestion = 3;
                         } else {
                             $suggestions = [];
@@ -251,6 +259,7 @@ class PromptingController extends Controller
                                 $suggestions[] = 'phrase it as a question';
                             }
                             $resultMessage = 'Your prompt needs improvement. Try to: ' . implode(', ', $suggestions) . '. Found entities: ' . (empty($foundEntities) ? 'none' : implode(', ', array_unique($foundEntities)));
+                            $imoji = 'moderate';
                             $currentQuestion = 3;
                         }
                     } else {
@@ -303,6 +312,7 @@ class PromptingController extends Controller
 
                         if ($isCorrect) {
                             $resultMessage = "Correct! Your improved prompt is clear, detailed, and relevant to '$selectedTopic'! Found topic keywords: " . implode(', ', $foundTopicKeywords);
+                            $imoji = 'happy';
                             $currentQuestion = 3;
                         } else {
                             $suggestions = [];
@@ -322,6 +332,7 @@ class PromptingController extends Controller
                                 $suggestions[] = 'phrase it as a question';
                             }
                             $resultMessage = 'Your prompt needs improvement. Try to: ' . implode(', ', $suggestions) . '. Found topic keywords: ' . (empty($foundTopicKeywords) ? 'none' : implode(', ', $foundTopicKeywords));
+                            $imoji = 'moderate';
                             $currentQuestion = 3;
                         }
                     }
@@ -334,9 +345,20 @@ class PromptingController extends Controller
             }
         }
 
+
+        // dd([
+        //     'showPopup' => $action === 'submit',
+        //     'isCorrect' => $isCorrect,
+        //     'imoji' => $imoji,
+        //     'resultMessage' => $resultMessage,
+        //     'currentQuestion' => $currentQuestion,
+        //     'selectedTopic' => $selectedTopic,
+        // ]);
+
         return view('prompting.prompting', [
             'showPopup' => $action === 'submit',
             'isCorrect' => $isCorrect,
+            'imoji' => $imoji,
             'resultMessage' => $resultMessage,
             'currentQuestion' => $currentQuestion,
             'selectedTopic' => $selectedTopic,
