@@ -19,40 +19,38 @@
                 <h2 class="text-3xl font-bold nunito text-center mb-2">Log in to your account</h2>
                 <p class="text-gray-600 text-center mb-12">Welcome back! Please enter your details.</p>
 
-                <!-- Form -->
-                <form action="#" method="POST" class="space-y-4">
-                    <input type="email" placeholder="Enter your email"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                <!-- Error Messages -->
+                @if($errors->any())
+                    <div class="mb-4 p-4 bg-red-50 text-red-700 rounded-lg">
+                        @foreach($errors->all() as $error)
+                            <p>{{ $error }}</p>
+                        @endforeach
+                    </div>
+                @endif
 
-                    <input type="password" placeholder="••••••••"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                <!-- Form -->
+                <form action="{{ route('login') }}" method="POST" class="space-y-4">
+                    @csrf
+                    <input type="email" name="email" placeholder="Enter your email" value="{{ old('email') }}"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                        required autofocus />
+
+                    <input type="password" name="password" placeholder="••••••••"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                        required />
+
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <input id="remember" name="remember" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="remember" class="ml-2 block text-sm text-gray-900">Remember me</label>
+                        </div>
+                    </div>
 
                     <button type="submit"
                         class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 mt-4 rounded-lg transition-colors">
                         Sign in
                     </button>
                 </form>
-
-                <!-- Divider -->
-                <div class="my-4">
-                    <button
-                        class="w-full flex items-center justify-center border border-gray-300 rounded-lg py-3 hover:bg-gray-100 transition-colors">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/800px-Google_%22G%22_logo.svg.png"
-                            alt="Google logo" class="w-5 h-5 mr-2" />
-                        <span class="text-sm font-medium text-gray-800">Sign in with Google</span>
-                    </button>
-                </div>
-
-                <!-- Footer Links -->
-                <div class="text-center text-sm text-gray-700 mt-6">
-                    <p>
-                        Don’t have an account?
-                        <a href="#" class="text-blue-600 hover:underline">Sign up</a>
-                    </p>
-                    <p class="mt-2">
-                        <a href="#" class="text-blue-600 hover:underline">Forget password</a>
-                    </p>
-                </div>
             </div>
         </div>
     </div>

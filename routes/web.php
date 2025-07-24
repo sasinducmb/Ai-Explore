@@ -5,6 +5,11 @@ use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\PromptingController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DesignController;
+use App\Http\Controllers\AuthController;
+
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/', function () {
     return view('index');
