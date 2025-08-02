@@ -9,16 +9,16 @@
         <div class="p-6">
             <h2 class="text-lg font-semibold text-gray-800 mb-4">Admin Menu</h2>
             <nav class="space-y-2">
-                <a href="{{ route('admin.dashboard') }}" class="block text-gray-700 hover:text-blue-600 font-medium">
+                <a href="{{ route('admin.dashboard') }}" class="block text-gray-700 hover:text-blue-600 font-medium bg-gray-100 rounded-lg p-2">
                     Dashboard
                 </a>
-                <a href="#" class="block text-gray-700 hover:text-blue-600 font-medium">
+                <a href="#" class="block text-gray-700 hover:text-blue-600 font-medium p-2">
                     Manage Users
                 </a>
-                <a href="#" class="block text-gray-700 hover:text-blue-600 font-medium">
+                <a href="#" class="block text-gray-700 hover:text-blue-600 font-medium p-2">
                     Tool Analytics
                 </a>
-                <a href="#" class="block text-gray-700 hover:text-blue-600 font-medium">
+                <a href="#" class="block text-gray-700 hover:text-blue-600 font-medium p-2">
                     Reports
                 </a>
             </nav>
@@ -39,24 +39,44 @@
         </header>
 
         <!-- Dashboard Content -->
-        <main class="p-6 bg-gray-100 flex-grow">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white shadow rounded-lg p-6">
-                    <h2 class="text-xl font-semibold text-gray-700 mb-2">User Management</h2>
-                    <p class="text-gray-600">Manage registered users, assign roles, and control access.</p>
+        <main class="p-6 bg-gray-100 flex-grow overflow-auto">
+            <div class="bg-white shadow rounded-lg p-6">
+                <h2 class="text-xl font-semibold text-gray-700 mb-4">Prompting Results</h2>
+                @if ($results->isEmpty())
+                <p class="text-gray-600">No prompting results found.</p>
+                @else
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                        <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Marks</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Percentage</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grade</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Completion Time</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                        @foreach ($results as $result)
+                        <tr class="{{ $result->completed ? '' : 'bg-yellow-50' }}">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $result->name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $result->total_marks ?? 0 }}/100</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ number_format($result->percentage, 2) }}%</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $result->grade ?? 'N/A' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $result->formatted_completion_time ?? 'N/A' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <a href="{{ route('admin.results.show', $result->session_id) }}" class="text-blue-600 hover:text-blue-800">View Details</a>
+                            </td>
+                        </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
                 </div>
-                <div class="bg-white shadow rounded-lg p-6">
-                    <h2 class="text-xl font-semibold text-gray-700 mb-2">AI Tool Analytics</h2>
-                    <p class="text-gray-600">View usage statistics and user activity.</p>
+                <div class="mt-4">
+                    {{ $results->links() }}
                 </div>
-                <div class="bg-white shadow rounded-lg p-6">
-                    <h2 class="text-xl font-semibold text-gray-700 mb-2">Content Moderation</h2>
-                    <p class="text-gray-600">Review and moderate user-generated content.</p>
-                </div>
-                <div class="bg-white shadow rounded-lg p-6">
-                    <h2 class="text-xl font-semibold text-gray-700 mb-2">System Settings</h2>
-                    <p class="text-gray-600">Configure system preferences and application settings.</p>
-                </div>
+                @endif
             </div>
         </main>
     </div>
