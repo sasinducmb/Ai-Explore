@@ -24,18 +24,18 @@
             @php
             $aiTools = [
             [
-            'id' => 1,
-            'img' => asset('asset/img/explore/1.png'),
-            'alt' => 'Prompting',
-            'title' => 'Prompting',
-            'desc' => 'Use text prompts to interact with AI and spark ideas.',
-            ],
-            [
             'id' => 2,
             'img' => asset('asset/img/explore/2.png'),
             'alt' => 'Design Tools',
             'title' => 'Design Tools',
             'desc' => 'Create visuals, layouts, and artwork with the help of AI.',
+            ],
+            [
+            'id' => 1,
+            'img' => asset('asset/img/explore/1.png'),
+            'alt' => 'Knowledge Base',
+            'title' => 'Knowledge Base',
+            'desc' => 'Use text prompts to interact with AI and explore concepts.',
             ],
             [
             'id' => 3,
@@ -47,12 +47,13 @@
             ];
             @endphp
 
+
             <!-- First Card -->
             @foreach ($aiTools as $index => $tool)
             @if ($index < 2)
             <a href="{{ $tool['id'] === 1 ? route('prompting.show') : route('design.tools') }}"
                class="block {{ $tool['id'] === 1 ? 'hover:cursor-pointer' : 'hover:cursor-not-allowed' }}">
-                <div class="flex items-center bg-white shadow-md shadow-blue-100 rounded-xl px-6 py-6 hover:shadow-lg hover:shadow-blue-200 transition border border-blue-200 transition-all duration-300 ease-in-out">
+                <div class="flex items-center bg-white shadow-md shadow-blue-100 rounded-xl px-6 py-6 hover:shadow-lg hover:shadow-blue-200 transition border border-blue-200 transition-all duration-300 ease-in-out h-36">
                     <img src="{{ $tool['img'] }}" alt="{{ $tool['alt'] }}"
                          class="w-12 h-12 mr-6 transition-all duration-300 ease-in-out object-contain"/>
                     <div>

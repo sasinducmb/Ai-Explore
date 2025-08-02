@@ -4,13 +4,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class AuthController extends Controller
 {
     // Show login form
     public function showLoginForm()
     {
-        return view('your-login-view-name'); // The view you showed in your question
+        return view('auth.login'); // blade file: resources/views/auth/login.blade.php
+    }
+
+    // Show register form
+    public function showRegisterForm()
+    {
+        return view('auth.register'); // blade file: resources/views/auth/register.blade.php
     }
 
     // Handle login
@@ -21,9 +29,9 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended('/'); // Change 'dashboard' to your desired redirect route
+            return redirect()->intended('/'); // Redirect to home/dashboard
         }
 
         return back()->withErrors([
@@ -31,12 +39,34 @@ class AuthController extends Controller
         ])->onlyInput('email');
     }
 
+    // Handle registration
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = User::create([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'password' => Hash::make($request->input('password')),
+        ]);
+
+        Auth::login($user); // Automatically log in after registration
+
+        return redirect('/')->with('success', 'Registration successful!');
+    }
+
     // Handle logout
     public function logout(Request $request)
     {
         Auth::logout();
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/');
+
+        return redirect()->route('login.form');
     }
 }
