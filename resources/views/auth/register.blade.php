@@ -17,7 +17,7 @@
 
         <!-- Register Box -->
         <div class="bg-white rounded-lg">
-            <h2 class="text-3xl font-bold nunito text-center mb-2">Create your account</h2>
+            <h2 class="text-3xl font-bold nunito text-center mb-2">Create your Parental account</h2>
             <p class="text-gray-600 text-center mb-12">Please fill the form below.</p>
 
             <!-- Error Messages -->
@@ -33,11 +33,11 @@
             <form action="{{ route('register') }}" method="POST" class="space-y-4">
                 @csrf
 
-                <input type="text" name="name" placeholder="Full Name" value="{{ old('name') }}"
+                <input type="text" name="name" placeholder="Kids Full Name" value="{{ old('name') }}"
                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                        required />
 
-                <input type="email" name="email" placeholder="Email" value="{{ old('email') }}"
+                <input type="email" name="email" placeholder="Parent's Email" value="{{ old('email') }}"
                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                        required />
 
