@@ -21,7 +21,6 @@ class AuthController extends Controller
         return view('auth.register'); // blade file: resources/views/auth/register.blade.php
     }
 
-    // Handle login
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -31,7 +30,16 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended('/'); // Redirect to home/dashboard
+
+            $user = Auth::user();
+            if ($user->role === 'ADMIN') {
+                return redirect()->route('admin.dashboard');
+            } elseif ($user->role === 'PARENT') {
+                return redirect()->route('parent.dashboard');
+            } else {
+                Auth::logout();
+                return redirect()->route('login.form')->withErrors(['email' => 'Role not authorized.']);
+            }
         }
 
         return back()->withErrors([
@@ -39,7 +47,8 @@ class AuthController extends Controller
         ])->onlyInput('email');
     }
 
-    // Handle registration
+
+
     public function register(Request $request)
     {
         $request->validate([
@@ -52,14 +61,14 @@ class AuthController extends Controller
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password')),
-            'role' => 'PARENT', // Set default role
+            'role' => 'PARENT', // assign default role
         ]);
 
+        Auth::login($user);
 
-        Auth::login($user); // Automatically log in after registration
-
-        return redirect('/')->with('success', 'Registration successful!');
+        return redirect()->route('parent.dashboard');
     }
+
 
     // Handle logout
     public function logout(Request $request)

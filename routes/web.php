@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DesignController;
@@ -7,9 +8,11 @@ use App\Http\Controllers\PromptingController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\GeminiChatbotController;
 
-// -----------------------------
-// Public Routes (No Login Required)
-// -----------------------------
+/*
+|--------------------------------------------------------------------------
+| Public Routes
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/', function () {
     return view('index');
@@ -21,31 +24,38 @@ Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('regi
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Language switcher
 Route::get('lang/{locale}', [LanguageController::class, 'switch'])->name('lang.switch');
 
-// -----------------------------
-// Protected Routes (Login Required)
-// -----------------------------
+/*
+|--------------------------------------------------------------------------
+| Protected Routes (Requires Authentication)
+|--------------------------------------------------------------------------
+*/
 
 Route::middleware(['auth'])->group(function () {
-    // Pages
-    Route::get('/learn-ai-tools', function () {
-        return view('learn-ai-tools');
-    })->name('learn-ai-tools');
 
-    Route::get('/explore-ai-tools', function () {
-        return view('explore-ai-tools');
-    })->name('explore-ai-tools');
+    // Role-Based Dashboards
+    Route::get('/admin/dashboard', function () {
+        if (Auth::user()->role !== 'ADMIN') {
+            abort(403, 'Unauthorized access.');
+        }
+        return view('dashboards.admin');
+    })->name('admin.dashboard');
 
-    Route::get('/meet-your-ai-buddy', function () {
-        return view('index');
-    })->name('meet-your-ai-buddy');
+    Route::get('/parent/dashboard', function () {
+        if (Auth::user()->role !== 'PARENT') {
+            abort(403, 'Unauthorized access.');
+        }
+        return view('dashboards.parent');
+    })->name('parent.dashboard');
 
-    Route::get('/chat-with-ai', function () {
-        return view('index');
-    })->name('chat-with-ai');
+    // Static Pages
+    Route::view('/learn-ai-tools', 'learn-ai-tools')->name('learn-ai-tools');
+    Route::view('/explore-ai-tools', 'explore-ai-tools')->name('explore-ai-tools');
+    Route::view('/meet-your-ai-buddy', 'index')->name('meet-your-ai-buddy');
+    Route::view('/chat-with-ai', 'index')->name('chat-with-ai');
 
+    // Dynamic Tool Routes
     Route::get('/learn-ai-tools/{id}', [LanguageController::class, 'show'])->name('ai-tools.show');
 
     // Prompting
@@ -53,12 +63,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/prompting/submit', [PromptingController::class, 'submit'])->name('prompting.submit');
     Route::get('/prompting/results', [PromptingController::class, 'results'])->name('prompting.results');
 
-    // Design tools
+    // Design Tools
     Route::get('/design-tools', [DesignController::class, 'show'])->name('design.tools');
     Route::post('/design-tools/submit', [DesignController::class, 'submit'])->name('design.submit');
     Route::get('/design-results', [DesignController::class, 'results'])->name('design.results');
 
-    // Gemini AI chatbot
+    // Gemini Chatbot
     Route::get('/gemini', [GeminiChatbotController::class, 'index'])->name('gemini.index');
     Route::post('/gemini/chat', [GeminiChatbotController::class, 'chatSimple'])->name('gemini.chat.send');
 });
