@@ -23,16 +23,64 @@ return new class extends Migration
             $table->text('question_2_answer')->nullable();
             $table->boolean('question_2_correct')->default(false);
             $table->integer('question_2_marks')->default(0);
-            $table->json('question_2_analysis')->nullable(); // Store analysis details
+            $table->json('question_2_analysis')->nullable();
             $table->timestamp('question_2_completed_at')->nullable();
 
             // Question 3 - Super Question Builder
-            $table->string('question_3_topic')->nullable();
             $table->text('question_3_answer')->nullable();
             $table->boolean('question_3_correct')->default(false);
             $table->integer('question_3_marks')->default(0);
-            $table->json('question_3_analysis')->nullable(); // Store analysis details
+            $table->json('question_3_analysis')->nullable();
             $table->timestamp('question_3_completed_at')->nullable();
+
+            // Question 4
+            $table->text('question_4_answer')->nullable();
+            $table->boolean('question_4_correct')->default(false);
+            $table->integer('question_4_marks')->default(0);
+            $table->json('question_4_analysis')->nullable();
+            $table->timestamp('question_4_completed_at')->nullable();
+
+            // Question 5
+            $table->text('question_5_answer')->nullable();
+            $table->boolean('question_5_correct')->default(false);
+            $table->integer('question_5_marks')->default(0);
+            $table->json('question_5_analysis')->nullable();
+            $table->timestamp('question_5_completed_at')->nullable();
+
+            // Question 6
+            $table->text('question_6_answer')->nullable();
+            $table->boolean('question_6_correct')->default(false);
+            $table->integer('question_6_marks')->default(0);
+            $table->json('question_6_analysis')->nullable();
+            $table->timestamp('question_6_completed_at')->nullable();
+
+            // Question 7
+            $table->text('question_7_answer')->nullable();
+            $table->boolean('question_7_correct')->default(false);
+            $table->integer('question_7_marks')->default(0);
+            $table->json('question_7_analysis')->nullable();
+            $table->timestamp('question_7_completed_at')->nullable();
+
+            // Question 8
+            $table->text('question_8_answer')->nullable();
+            $table->boolean('question_8_correct')->default(false);
+            $table->integer('question_8_marks')->default(0);
+            $table->json('question_8_analysis')->nullable();
+            $table->timestamp('question_8_completed_at')->nullable();
+
+            // Question 9
+            $table->text('question_9_answer')->nullable();
+            $table->boolean('question_9_correct')->default(false);
+            $table->integer('question_9_marks')->default(0);
+            $table->json('question_9_analysis')->nullable();
+            $table->timestamp('question_9_completed_at')->nullable();
+
+            // Question 10
+            $table->text('question_10_answer')->nullable();
+            $table->boolean('question_10_correct')->default(false);
+            $table->integer('question_10_marks')->default(0);
+            $table->json('question_10_analysis')->nullable();
+            $table->timestamp('question_10_completed_at')->nullable();
 
             // Overall results
             $table->integer('total_marks')->default(0);

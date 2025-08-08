@@ -15,30 +15,26 @@ class DesignController extends Controller
 
     public function submit(Request $request)
     {
-        $question = $request->input('question');
+        $question = (int) $request->input('question');
         $action = $request->input('action', 'submit'); // Default to 'submit'
         $isCorrect = false;
         $resultMessage = null;
         $currentQuestion = $question;
         $prompt = $request->input('prompt', '');
 
+        $TOTAL_QUESTIONS = 10;
+
         if ($action === 'next') {
-            // Move to the next question without validation
-            if ($question == 1) {
-                $currentQuestion = 2;
-            } elseif ($question == 2) {
-                $currentQuestion = 3;
-            } elseif ($question == 3) {
-                $currentQuestion = 3; // Stay on last question or redirect
+            if ($question < $TOTAL_QUESTIONS) {
+                $currentQuestion = $question + 1;
+            } else {
+                $currentQuestion = $TOTAL_QUESTIONS;
             }
         } elseif ($action === 'finish') {
-            // Handle finish action (e.g., redirect to a results page)
             return redirect()->route('design.results');
         } else {
-            // Handle submit action with validation
             if ($question == 1) {
-                // Question 1: Draw with AI! (No input to validate, just proceed)
-                $isCorrect = true; // Assume completion is correct for now
+                $isCorrect = true;
                 $resultMessage = 'Great job on your drawing! Move to the next question.';
                 $currentQuestion = 2;
             } elseif ($question == 2) {
@@ -128,6 +124,224 @@ class DesignController extends Controller
                     $resultMessage = 'An error occurred while analyzing your prompt. Please try again.';
                     $isCorrect = false;
                     $currentQuestion = 3;
+                }
+            } elseif ($question == 4) {
+                $request->validate([
+                    'prompt' => 'required|string|max:500',
+                ], [
+                    'prompt.required' => 'A prompt is required.',
+                ]);
+                Log::info('Submitted prompt for Question 4: ' . $prompt);
+                try {
+                    $promptLower = strtolower($prompt);
+                    $requiredTransformations = ['add a blue balloon', 'remove the cat', 'make the grass green'];
+                    $foundTransformations = [];
+                    foreach ($requiredTransformations as $transformation) {
+                        if (strpos($promptLower, $transformation) !== false) {
+                            $foundTransformations[] = $transformation;
+                        }
+                    }
+                    $isCorrect = count($foundTransformations) >= 2;
+                    if ($isCorrect) {
+                        $resultMessage = 'Correct! Your prompt accurately describes the changes needed! Found transformations: ' . implode(', ', $foundTransformations);
+                        $currentQuestion = 5;
+                    } else {
+                        $missing = array_diff($requiredTransformations, $foundTransformations);
+                        $resultMessage = 'Your prompt needs improvement. Try to include more transformations like: ' . implode(', ', array_slice($missing, 0, 2)) . '. Found transformations: ' . (empty($foundTransformations) ? 'none' : implode(', ', $foundTransformations));
+                        $currentQuestion = 4;
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Unexpected error: ' . $e->getMessage());
+                    $resultMessage = 'An error occurred while analyzing your prompt. Please try again.';
+                    $isCorrect = false;
+                    $currentQuestion = 4;
+                }
+            } elseif ($question == 5) {
+                $request->validate([
+                    'prompt' => 'required|string|max:500',
+                ], [
+                    'prompt.required' => 'A prompt is required.',
+                ]);
+                Log::info('Submitted prompt for Question 5: ' . $prompt);
+                try {
+                    $promptLower = strtolower($prompt);
+                    $requiredTransformations = ['add a rainbow', 'remove the clouds', 'make the sun bigger'];
+                    $foundTransformations = [];
+                    foreach ($requiredTransformations as $transformation) {
+                        if (strpos($promptLower, $transformation) !== false) {
+                            $foundTransformations[] = $transformation;
+                        }
+                    }
+                    $isCorrect = count($foundTransformations) >= 2;
+                    if ($isCorrect) {
+                        $resultMessage = 'Correct! Your prompt accurately describes the changes needed! Found transformations: ' . implode(', ', $foundTransformations);
+                        $currentQuestion = 6;
+                    } else {
+                        $missing = array_diff($requiredTransformations, $foundTransformations);
+                        $resultMessage = 'Your prompt needs improvement. Try to include more transformations like: ' . implode(', ', array_slice($missing, 0, 2)) . '. Found transformations: ' . (empty($foundTransformations) ? 'none' : implode(', ', $foundTransformations));
+                        $currentQuestion = 5;
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Unexpected error: ' . $e->getMessage());
+                    $resultMessage = 'An error occurred while analyzing your prompt. Please try again.';
+                    $isCorrect = false;
+                    $currentQuestion = 5;
+                }
+            } elseif ($question == 6) {
+                $request->validate([
+                    'prompt' => 'required|string|max:500',
+                ], [
+                    'prompt.required' => 'A prompt is required.',
+                ]);
+                Log::info('Submitted prompt for Question 6: ' . $prompt);
+                try {
+                    $promptLower = strtolower($prompt);
+                    $requiredTransformations = ['add a yellow bird', 'remove the fence', 'make the tree taller'];
+                    $foundTransformations = [];
+                    foreach ($requiredTransformations as $transformation) {
+                        if (strpos($promptLower, $transformation) !== false) {
+                            $foundTransformations[] = $transformation;
+                        }
+                    }
+                    $isCorrect = count($foundTransformations) >= 2;
+                    if ($isCorrect) {
+                        $resultMessage = 'Correct! Your prompt accurately describes the changes needed! Found transformations: ' . implode(', ', $foundTransformations);
+                        $currentQuestion = 7;
+                    } else {
+                        $missing = array_diff($requiredTransformations, $foundTransformations);
+                        $resultMessage = 'Your prompt needs improvement. Try to include more transformations like: ' . implode(', ', array_slice($missing, 0, 2)) . '. Found transformations: ' . (empty($foundTransformations) ? 'none' : implode(', ', $foundTransformations));
+                        $currentQuestion = 6;
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Unexpected error: ' . $e->getMessage());
+                    $resultMessage = 'An error occurred while analyzing your prompt. Please try again.';
+                    $isCorrect = false;
+                    $currentQuestion = 6;
+                }
+            } elseif ($question == 7) {
+                $request->validate([
+                    'prompt' => 'required|string|max:500',
+                ], [
+                    'prompt.required' => 'A prompt is required.',
+                ]);
+                Log::info('Submitted prompt for Question 7: ' . $prompt);
+                try {
+                    $promptLower = strtolower($prompt);
+                    $requiredTransformations = ['add a green car', 'remove the house', 'make the road wider'];
+                    $foundTransformations = [];
+                    foreach ($requiredTransformations as $transformation) {
+                        if (strpos($promptLower, $transformation) !== false) {
+                            $foundTransformations[] = $transformation;
+                        }
+                    }
+                    $isCorrect = count($foundTransformations) >= 2;
+                    if ($isCorrect) {
+                        $resultMessage = 'Correct! Your prompt accurately describes the changes needed! Found transformations: ' . implode(', ', $foundTransformations);
+                        $currentQuestion = 8;
+                    } else {
+                        $missing = array_diff($requiredTransformations, $foundTransformations);
+                        $resultMessage = 'Your prompt needs improvement. Try to include more transformations like: ' . implode(', ', array_slice($missing, 0, 2)) . '. Found transformations: ' . (empty($foundTransformations) ? 'none' : implode(', ', $foundTransformations));
+                        $currentQuestion = 7;
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Unexpected error: ' . $e->getMessage());
+                    $resultMessage = 'An error occurred while analyzing your prompt. Please try again.';
+                    $isCorrect = false;
+                    $currentQuestion = 7;
+                }
+            } elseif ($question == 8) {
+                $request->validate([
+                    'prompt' => 'required|string|max:500',
+                ], [
+                    'prompt.required' => 'A prompt is required.',
+                ]);
+                Log::info('Submitted prompt for Question 8: ' . $prompt);
+                try {
+                    $promptLower = strtolower($prompt);
+                    $requiredTransformations = ['add a purple flower', 'remove the river', 'make the mountain higher'];
+                    $foundTransformations = [];
+                    foreach ($requiredTransformations as $transformation) {
+                        if (strpos($promptLower, $transformation) !== false) {
+                            $foundTransformations[] = $transformation;
+                        }
+                    }
+                    $isCorrect = count($foundTransformations) >= 2;
+                    if ($isCorrect) {
+                        $resultMessage = 'Correct! Your prompt accurately describes the changes needed! Found transformations: ' . implode(', ', $foundTransformations);
+                        // Stay on 8 or redirect to results
+                        $currentQuestion = 8;
+                    } else {
+                        $missing = array_diff($requiredTransformations, $foundTransformations);
+                        $resultMessage = 'Your prompt needs improvement. Try to include more transformations like: ' . implode(', ', array_slice($missing, 0, 2)) . '. Found transformations: ' . (empty($foundTransformations) ? 'none' : implode(', ', $foundTransformations));
+                        $currentQuestion = 8;
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Unexpected error: ' . $e->getMessage());
+                    $resultMessage = 'An error occurred while analyzing your prompt. Please try again.';
+                    $isCorrect = false;
+                    $currentQuestion = 8;
+                }
+            } elseif ($question == 9) {
+                $request->validate([
+                    'prompt' => 'required|string|max:500',
+                ], [
+                    'prompt.required' => 'A prompt is required.',
+                ]);
+                Log::info('Submitted prompt for Question 9: ' . $prompt);
+                try {
+                    $promptLower = strtolower($prompt);
+                    $requiredTransformations = ['add a brown dog', 'remove the bridge', 'make the sky cloudy'];
+                    $foundTransformations = [];
+                    foreach ($requiredTransformations as $transformation) {
+                        if (strpos($promptLower, $transformation) !== false) {
+                            $foundTransformations[] = $transformation;
+                        }
+                    }
+                    $isCorrect = count($foundTransformations) >= 2;
+                    if ($isCorrect) {
+                        $resultMessage = 'Correct! Your prompt accurately describes the changes needed! Found transformations: ' . implode(', ', $foundTransformations);
+                        $currentQuestion = 10;
+                    } else {
+                        $missing = array_diff($requiredTransformations, $foundTransformations);
+                        $resultMessage = 'Your prompt needs improvement. Try to include more transformations like: ' . implode(', ', array_slice($missing, 0, 2)) . '. Found transformations: ' . (empty($foundTransformations) ? 'none' : implode(', ', $foundTransformations));
+                        $currentQuestion = 9;
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Unexpected error: ' . $e->getMessage());
+                    $resultMessage = 'An error occurred while analyzing your prompt. Please try again.';
+                    $isCorrect = false;
+                    $currentQuestion = 9;
+                }
+            } elseif ($question == 10) {
+                $request->validate([
+                    'prompt' => 'required|string|max:500',
+                ], [
+                    'prompt.required' => 'A prompt is required.',
+                ]);
+                Log::info('Submitted prompt for Question 10: ' . $prompt);
+                try {
+                    $promptLower = strtolower($prompt);
+                    $requiredTransformations = ['add a pink balloon', 'remove the boat', 'make the grass yellow'];
+                    $foundTransformations = [];
+                    foreach ($requiredTransformations as $transformation) {
+                        if (strpos($promptLower, $transformation) !== false) {
+                            $foundTransformations[] = $transformation;
+                        }
+                    }
+                    $isCorrect = count($foundTransformations) >= 2;
+                    if ($isCorrect) {
+                        $resultMessage = 'Correct! Your prompt accurately describes the changes needed! Found transformations: ' . implode(', ', $foundTransformations);
+                        $currentQuestion = 10;
+                    } else {
+                        $missing = array_diff($requiredTransformations, $foundTransformations);
+                        $resultMessage = 'Your prompt needs improvement. Try to include more transformations like: ' . implode(', ', array_slice($missing, 0, 2)) . '. Found transformations: ' . (empty($foundTransformations) ? 'none' : implode(', ', $foundTransformations));
+                        $currentQuestion = 10;
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Unexpected error: ' . $e->getMessage());
+                    $resultMessage = 'An error occurred while analyzing your prompt. Please try again.';
+                    $isCorrect = false;
+                    $currentQuestion = 10;
                 }
             }
         }

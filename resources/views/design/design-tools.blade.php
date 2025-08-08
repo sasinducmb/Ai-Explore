@@ -147,13 +147,376 @@
             </form>
         </div>
 
+        <!-- Question 4: AI Image Transformation Challenge -->
+        <div id="question-4" class="{{ isset($currentQuestion) && $currentQuestion != 4 ? 'hidden' : '' }}">
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold poppins text-gray-900 mb-6 animate-fade-in">
+                Question 4: AI Image Transformation Challenge
+            </h2>
+            <p class="text-gray-600 font-medium poppins max-w-3xl mx-auto mb-10 text-base sm:text-lg leading-relaxed animate-fade-in-delay">
+                Kids will see two images: Image A (original) and Image B (target). The second image looks similar to the first but has a few changes. Your task is to figure out what’s different and create a prompt that would transform Image A into Image B.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
+                <img src="{{ asset('asset/img/image_a4.jpeg') }}" alt="Image A"
+                     class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                <img src="{{ asset('asset/img/image_b4.jpeg') }}" alt="Image B"
+                     class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
+            </div>
+            <div class="bg-gradient-to-br from-blue-50 to-white shadow-lg shadow-blue-100/50 rounded-xl p-6 mb-10 border border-blue-200 transform hover:scale-105 transition duration-300 ease-in-out">
+                <h3 class="font-semibold text-xl sm:text-2xl text-gray-800 mb-5 border-b-2 border-blue-200 pb-2">
+                    Instructions:
+                </h3>
+                <ul class="list-disc pl-6 text-gray-700 text-base sm:text-lg space-y-4">
+                    <li class="flex items-center">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                        <span>Carefully look at Image A and Image B.</span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                        <span>Find the differences – what new things are added, removed, or changed?</span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                        <span>Type a prompt below using clear and simple words (e.g.“remove the tree,” “make the sky sunny”).</span>
+                    </li>
+                </ul>
+            </div>
+            <form id="transform-form-4" action="{{ route('design.submit') }}" method="POST" class="space-y-6">
+                @csrf
+                <input type="hidden" name="question" value="4">
+                <input type="hidden" name="action" id="action-input-4" value="submit">
+                <div>
+                    <label class="block text-gray-700 font-medium mb-3 text-sm sm:text-base text-left">Your Transformation Prompt:</label>
+                    <textarea name="prompt" id="transform-prompt-input-4" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base" rows="4" required>{{ old('prompt', $prompt ?? '') }}</textarea>
+                    @error('prompt')
+                    <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="flex justify-center">
+                    <button type="submit" class="px-8 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 focus:ring-4 focus:ring-blue-300 transition-all duration-300 text-base sm:text-lg font-medium shadow-md hover:shadow-lg transform hover:-translate-y-1">
+                        Submit Prompt
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Question 5: AI Image Transformation Challenge -->
+        <div id="question-5" class="{{ isset($currentQuestion) && $currentQuestion != 5 ? 'hidden' : '' }}">
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold poppins text-gray-900 mb-6 animate-fade-in">
+                Question 5: AI Image Transformation Challenge
+            </h2>
+            <p class="text-gray-600 font-medium poppins max-w-3xl mx-auto mb-10 text-base sm:text-lg leading-relaxed animate-fade-in-delay">
+                Kids will see two images: Image A (original) and Image B (target). The second image looks similar to the first but has a few changes. Your task is to figure out what’s different and create a prompt that would transform Image A into Image B.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
+                <img src="{{ asset('asset/img/image_a5.jpeg') }}" alt="Image A"
+                     class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                <img src="{{ asset('asset/img/image_b5.jpeg') }}" alt="Image B"
+                     class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
+            </div>
+            <div class="bg-gradient-to-br from-blue-50 to-white shadow-lg shadow-blue-100/50 rounded-xl p-6 mb-10 border border-blue-200 transform hover:scale-105 transition duration-300 ease-in-out">
+                <h3 class="font-semibold text-xl sm:text-2xl text-gray-800 mb-5 border-b-2 border-blue-200 pb-2">
+                    Instructions:
+                </h3>
+                <ul class="list-disc pl-6 text-gray-700 text-base sm:text-lg space-y-4">
+                    <li class="flex items-center">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                        <span>Carefully look at Image A and Image B.</span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                        <span>Find the differences – what new things are added, removed, or changed?</span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                        <span>Type a prompt below using clear and simple words (e.g.“remove the tree,” “make the sky sunny”).</span>
+                    </li>
+                </ul>
+            </div>
+            <form id="transform-form-5" action="{{ route('design.submit') }}" method="POST" class="space-y-6">
+                @csrf
+                <input type="hidden" name="question" value="5">
+                <input type="hidden" name="action" id="action-input-5" value="submit">
+                <div>
+                    <label class="block text-gray-700 font-medium mb-3 text-sm sm:text-base text-left">Your Transformation Prompt:</label>
+                    <textarea name="prompt" id="transform-prompt-input-5" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base" rows="4" required>{{ old('prompt', $prompt ?? '') }}</textarea>
+                    @error('prompt')
+                    <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="flex justify-center">
+                    <button type="submit" class="px-8 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 focus:ring-4 focus:ring-blue-300 transition-all duration-300 text-base sm:text-lg font-medium shadow-md hover:shadow-lg transform hover:-translate-y-1">
+                        Submit Prompt
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Question 6: AI Image Transformation Challenge -->
+        <div id="question-6" class="{{ isset($currentQuestion) && $currentQuestion != 6 ? 'hidden' : '' }}">
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold poppins text-gray-900 mb-6 animate-fade-in">
+                Question 6: AI Image Transformation Challenge
+            </h2>
+            <p class="text-gray-600 font-medium poppins max-w-3xl mx-auto mb-10 text-base sm:text-lg leading-relaxed animate-fade-in-delay">
+                Kids will see two images: Image A (original) and Image B (target). The second image looks similar to the first but has a few changes. Your task is to figure out what’s different and create a prompt that would transform Image A into Image B.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
+                <img src="{{ asset('asset/img/image_a6.jpeg') }}" alt="Image A"
+                     class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                <img src="{{ asset('asset/img/image_b6.jpeg') }}" alt="Image B"
+                     class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
+            </div>
+            <div class="bg-gradient-to-br from-blue-50 to-white shadow-lg shadow-blue-100/50 rounded-xl p-6 mb-10 border border-blue-200 transform hover:scale-105 transition duration-300 ease-in-out">
+                <h3 class="font-semibold text-xl sm:text-2xl text-gray-800 mb-5 border-b-2 border-blue-200 pb-2">
+                    Instructions:
+                </h3>
+                <ul class="list-disc pl-6 text-gray-700 text-base sm:text-lg space-y-4">
+                    <li class="flex items-center">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                        <span>Carefully look at Image A and Image B.</span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                        <span>Find the differences – what new things are added, removed, or changed?</span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                        <span>Type a prompt below using clear and simple words (e.g.“remove the tree,” “make the sky sunny”).</span>
+                    </li>
+                </ul>
+            </div>
+            <form id="transform-form-6" action="{{ route('design.submit') }}" method="POST" class="space-y-6">
+                @csrf
+                <input type="hidden" name="question" value="6">
+                <input type="hidden" name="action" id="action-input-6" value="submit">
+                <div>
+                    <label class="block text-gray-700 font-medium mb-3 text-sm sm:text-base text-left">Your Transformation Prompt:</label>
+                    <textarea name="prompt" id="transform-prompt-input-6" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base" rows="4" required>{{ old('prompt', $prompt ?? '') }}</textarea>
+                    @error('prompt')
+                    <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="flex justify-center">
+                    <button type="submit" class="px-8 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 focus:ring-4 focus:ring-blue-300 transition-all duration-300 text-base sm:text-lg font-medium shadow-md hover:shadow-lg transform hover:-translate-y-1">
+                        Submit Prompt
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Question 7: AI Image Transformation Challenge -->
+        <div id="question-7" class="{{ isset($currentQuestion) && $currentQuestion != 7 ? 'hidden' : '' }}">
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold poppins text-gray-900 mb-6 animate-fade-in">
+                Question 7: AI Image Transformation Challenge
+            </h2>
+            <p class="text-gray-600 font-medium poppins max-w-3xl mx-auto mb-10 text-base sm:text-lg leading-relaxed animate-fade-in-delay">
+                Kids will see two images: Image A (original) and Image B (target). The second image looks similar to the first but has a few changes. Your task is to figure out what’s different and create a prompt that would transform Image A into Image B.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
+                <img src="{{ asset('asset/img/image_a7.jpeg') }}" alt="Image A"
+                     class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                <img src="{{ asset('asset/img/image_b7.jpeg') }}" alt="Image B"
+                     class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
+            </div>
+            <div class="bg-gradient-to-br from-blue-50 to-white shadow-lg shadow-blue-100/50 rounded-xl p-6 mb-10 border border-blue-200 transform hover:scale-105 transition duration-300 ease-in-out">
+                <h3 class="font-semibold text-xl sm:text-2xl text-gray-800 mb-5 border-b-2 border-blue-200 pb-2">
+                    Instructions:
+                </h3>
+                <ul class="list-disc pl-6 text-gray-700 text-base sm:text-lg space-y-4">
+                    <li class="flex items-center">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                        <span>Carefully look at Image A and Image B.</span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                        <span>Find the differences – what new things are added, removed, or changed?</span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                        <span>Type a prompt below using clear and simple words (e.g.“remove the tree,” “make the sky sunny”).</span>
+                    </li>
+                </ul>
+            </div>
+            <form id="transform-form-7" action="{{ route('design.submit') }}" method="POST" class="space-y-6">
+                @csrf
+                <input type="hidden" name="question" value="7">
+                <input type="hidden" name="action" id="action-input-7" value="submit">
+                <div>
+                    <label class="block text-gray-700 font-medium mb-3 text-sm sm:text-base text-left">Your Transformation Prompt:</label>
+                    <textarea name="prompt" id="transform-prompt-input-7" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base" rows="4" required>{{ old('prompt', $prompt ?? '') }}</textarea>
+                    @error('prompt')
+                    <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="flex justify-center">
+                    <button type="submit" class="px-8 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 focus:ring-4 focus:ring-blue-300 transition-all duration-300 text-base sm:text-lg font-medium shadow-md hover:shadow-lg transform hover:-translate-y-1">
+                        Submit Prompt
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Question 8: AI Image Transformation Challenge -->
+        <div id="question-8" class="{{ isset($currentQuestion) && $currentQuestion != 8 ? 'hidden' : '' }}">
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold poppins text-gray-900 mb-6 animate-fade-in">
+                Question 8: AI Image Transformation Challenge
+            </h2>
+            <p class="text-gray-600 font-medium poppins max-w-3xl mx-auto mb-10 text-base sm:text-lg leading-relaxed animate-fade-in-delay">
+                Kids will see two images: Image A (original) and Image B (target). The second image looks similar to the first but has a few changes. Your task is to figure out what’s different and create a prompt that would transform Image A into Image B.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
+                <img src="{{ asset('asset/img/image_a8.jpeg') }}" alt="Image A"
+                     class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                <img src="{{ asset('asset/img/image_b8.jpeg') }}" alt="Image B"
+                     class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
+            </div>
+            <div class="bg-gradient-to-br from-blue-50 to-white shadow-lg shadow-blue-100/50 rounded-xl p-6 mb-10 border border-blue-200 transform hover:scale-105 transition duration-300 ease-in-out">
+                <h3 class="font-semibold text-xl sm:text-2xl text-gray-800 mb-5 border-b-2 border-blue-200 pb-2">
+                    Instructions:
+                </h3>
+                <ul class="list-disc pl-6 text-gray-700 text-base sm:text-lg space-y-4">
+                    <li class="flex items-center">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                        <span>Carefully look at Image A and Image B.</span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                        <span>Find the differences – what new things are added, removed, or changed?</span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                        <span>Type a prompt below using clear and simple words (e.g.“remove the tree,” “make the sky sunny”).</span>
+                    </li>
+                </ul>
+            </div>
+            <form id="transform-form-8" action="{{ route('design.submit') }}" method="POST" class="space-y-6">
+                @csrf
+                <input type="hidden" name="question" value="8">
+                <input type="hidden" name="action" id="action-input-8" value="submit">
+                <div>
+                    <label class="block text-gray-700 font-medium mb-3 text-sm sm:text-base text-left">Your Transformation Prompt:</label>
+                    <textarea name="prompt" id="transform-prompt-input-8" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base" rows="4" required>{{ old('prompt', $prompt ?? '') }}</textarea>
+                    @error('prompt')
+                    <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="flex justify-center">
+                    <button type="submit" class="px-8 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 focus:ring-4 focus:ring-blue-300 transition-all duration-300 text-base sm:text-lg font-medium shadow-md hover:shadow-lg transform hover:-translate-y-1">
+                        Submit Prompt
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Question 9: Placeholder for future question -->
+        <div id="question-9" class="{{ isset($currentQuestion) && $currentQuestion != 9 ? 'hidden' : '' }}">
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold poppins text-gray-900 mb-6 animate-fade-in">
+                Question 9: AI Image Transformation Challenge
+            </h2>
+            <p class="text-gray-600 font-medium poppins max-w-3xl mx-auto mb-10 text-base sm:text-lg leading-relaxed animate-fade-in-delay">
+                Kids will see two images: Image A (original) and Image B (target). The second image looks similar to the first but has a few changes. Your task is to figure out what’s different and create a prompt that would transform Image A into Image B.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
+                <img src="{{ asset('asset/img/image_a9.jpeg') }}" alt="Image A"
+                     class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                <img src="{{ asset('asset/img/image_b9.jpeg') }}" alt="Image B"
+                     class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
+            </div>
+            <div class="bg-gradient-to-br from-blue-50 to-white shadow-lg shadow-blue-100/50 rounded-xl p-6 mb-10 border border-blue-200 transform hover:scale-105 transition duration-300 ease-in-out">
+                <h3 class="font-semibold text-xl sm:text-2xl text-gray-800 mb-5 border-b-2 border-blue-200 pb-2">
+                    Instructions:
+                </h3>
+                <ul class="list-disc pl-6 text-gray-700 text-base sm:text-lg space-y-4">
+                    <li class="flex items-center">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                        <span>Carefully look at Image A and Image B.</span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                        <span>Find the differences – what new things are added, removed, or changed?</span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                        <span>Type a prompt below using clear and simple words (e.g.“remove the tree,” “make the sky sunny”).</span>
+                    </li>
+                </ul>
+            </div>
+            <form id="transform-form-9" action="{{ route('design.submit') }}" method="POST" class="space-y-6">
+                @csrf
+                <input type="hidden" name="question" value="9">
+                <input type="hidden" name="action" id="action-input-9" value="submit">
+                <div>
+                    <label class="block text-gray-700 font-medium mb-3 text-sm sm:text-base text-left">Your Transformation Prompt:</label>
+                    <textarea name="prompt" id="transform-prompt-input-9" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base" rows="4" required>{{ old('prompt', $prompt ?? '') }}</textarea>
+                    @error('prompt')
+                    <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="flex justify-center">
+                    <button type="submit" class="px-8 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 focus:ring-4 focus:ring-blue-300 transition-all duration-300 text-base sm:text-lg font-medium shadow-md hover:shadow-lg transform hover:-translate-y-1">
+                        Submit Prompt
+                    </button>
+                </div>
+            </form>
+        </div>
+        <!-- Question 10: Placeholder for future question -->
+        <div id="question-10" class="{{ isset($currentQuestion) && $currentQuestion != 10 ? 'hidden' : '' }}">
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold poppins text-gray-900 mb-6 animate-fade-in">
+                Question 10: AI Image Transformation Challenge
+            </h2>
+            <p class="text-gray-600 font-medium poppins max-w-3xl mx-auto mb-10 text-base sm:text-lg leading-relaxed animate-fade-in-delay">
+                Kids will see two images: Image A (original) and Image B (target). The second image looks similar to the first but has a few changes. Your task is to figure out what’s different and create a prompt that would transform Image A into Image B.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
+                <img src="{{ asset('asset/img/image_a10.jpeg') }}" alt="Image A"
+                     class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                <img src="{{ asset('asset/img/image_b10.jpeg') }}" alt="Image B"
+                     class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
+            </div>
+            <div class="bg-gradient-to-br from-blue-50 to-white shadow-lg shadow-blue-100/50 rounded-xl p-6 mb-10 border border-blue-200 transform hover:scale-105 transition duration-300 ease-in-out">
+                <h3 class="font-semibold text-xl sm:text-2xl text-gray-800 mb-5 border-b-2 border-blue-200 pb-2">
+                    Instructions:
+                </h3>
+                <ul class="list-disc pl-6 text-gray-700 text-base sm:text-lg space-y-4">
+                    <li class="flex items-center">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                        <span>Carefully look at Image A and Image B.</span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                        <span>Find the differences – what new things are added, removed, or changed?</span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                        <span>Type a prompt below using clear and simple words (e.g.“remove the tree,” “make the sky sunny”).</span>
+                    </li>
+                </ul>
+            </div>
+            <form id="transform-form-10" action="{{ route('design.submit') }}" method="POST" class="space-y-6">
+                @csrf
+                <input type="hidden" name="question" value="10">
+                <input type="hidden" name="action" id="action-input-10" value="submit">
+                <div>
+                    <label class="block text-gray-700 font-medium mb-3 text-sm sm:text-base text-left">Your Transformation Prompt:</label>
+                    <textarea name="prompt" id="transform-prompt-input-10" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base" rows="4" required>{{ old('prompt', $prompt ?? '') }}</textarea>
+                    @error('prompt')
+                    <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="flex justify-center">
+                    <button type="submit" class="px-8 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 focus:ring-4 focus:ring-blue-300 transition-all duration-300 text-base sm:text-lg font-medium shadow-md hover:shadow-lg transform hover:-translate-y-1">
+                        Submit Prompt
+                    </button>
+                </div>
+            </form>
+        </div>
+
         <!-- Navigation Buttons -->
         <div class="text-center mt-6 flex justify-center gap-4">
             <a href="#" id="prev-button" class="px-8 py-3 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-lg hover:from-gray-600 hover:to-gray-700 focus:ring-4 focus:ring-gray-300 transition-all duration-300 text-base sm:text-lg font-medium shadow-md hover:shadow-lg transform hover:-translate-y-1 {{ isset($currentQuestion) && $currentQuestion == 1 ? 'hidden' : '' }}">
                 Previous
             </a>
             <a href="#" id="next-button" class="px-8 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 focus:ring-4 focus:ring-blue-300 transition-all duration-300 text-base sm:text-lg font-medium shadow-md hover:shadow-lg transform hover:-translate-y-1">
-                {{ isset($currentQuestion) && $currentQuestion == 3 ? 'Finish' : 'Next' }}
+                {{ isset($currentQuestion) && $currentQuestion == 10 ? 'Finish' : 'Next' }}
             </a>
             <form id="nav-form" action="{{ route('design.submit') }}" method="POST" style="display: none;">
                 @csrf
@@ -204,6 +567,8 @@
         const navForm = document.getElementById('nav-form');
         const currentQuestionInput = document.getElementById('current-question-input');
         const navActionInput = document.getElementById('nav-action');
+        // Update this to match the total number of questions
+        const TOTAL_QUESTIONS = 10;
         let currentQuestion = parseInt(currentQuestionInput.value);
 
         // Update button visibility and text based on current question
@@ -211,7 +576,7 @@
             document.querySelectorAll('[id^="question-"]').forEach(el => el.classList.add('hidden'));
             document.getElementById(`question-${currentQuestion}`).classList.remove('hidden');
             prevButton.classList.toggle('hidden', currentQuestion === 1);
-            nextButton.textContent = currentQuestion === 3 ? 'Finish' : 'Next';
+            nextButton.textContent = currentQuestion === TOTAL_QUESTIONS ? 'Finish' : 'Next';
         }
 
         // Initial setup
@@ -220,7 +585,7 @@
         // Next button click
         nextButton.addEventListener('click', function(e) {
             e.preventDefault();
-            if (currentQuestion < 3) {
+            if (currentQuestion < TOTAL_QUESTIONS) {
                 currentQuestion++;
                 currentQuestionInput.value = currentQuestion;
                 navActionInput.value = 'next';
