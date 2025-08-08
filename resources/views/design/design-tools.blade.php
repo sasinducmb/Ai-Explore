@@ -152,13 +152,11 @@
             <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold poppins text-gray-900 mb-6 animate-fade-in">
                 Question 4: AI Image Transformation Challenge
             </h2>
-            <p class="text-gray-600 font-medium poppins max-w-3xl mx-auto mb-10 text-base sm:text-lg leading-relaxed animate-fade-in-delay">
-                Kids will see two images: Image A (original) and Image B (target). The second image looks similar to the first but has a few changes. Your task is to figure out what’s different and create a prompt that would transform Image A into Image B.
+             <p class="text-gray-600 font-medium poppins max-w-3xl mx-auto mb-10 text-base sm:text-lg leading-relaxed animate-fade-in-delay">
+                Kids receive a few words related to a secret story image. They must use those words to prompt an AI image generator and create an image that matches the hidden story.
             </p>
             <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
                 <img src="{{ asset('asset/img/image_a4.jpeg') }}" alt="Image A"
-                     class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
-                <img src="{{ asset('asset/img/image_b4.jpeg') }}" alt="Image B"
                      class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
             </div>
             <div class="bg-gradient-to-br from-blue-50 to-white shadow-lg shadow-blue-100/50 rounded-xl p-6 mb-10 border border-blue-200 transform hover:scale-105 transition duration-300 ease-in-out">
@@ -204,15 +202,13 @@
             <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold poppins text-gray-900 mb-6 animate-fade-in">
                 Question 5: AI Image Transformation Challenge
             </h2>
-            <p class="text-gray-600 font-medium poppins max-w-3xl mx-auto mb-10 text-base sm:text-lg leading-relaxed animate-fade-in-delay">
-                Kids will see two images: Image A (original) and Image B (target). The second image looks similar to the first but has a few changes. Your task is to figure out what’s different and create a prompt that would transform Image A into Image B.
+              <p class="text-gray-600 font-medium poppins max-w-3xl mx-auto mb-10 text-base sm:text-lg leading-relaxed animate-fade-in-delay">
+                Kids receive a few words related to a secret story image. They must use those words to prompt an AI image generator and create an image that matches the hidden story.
             </p>
             <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
                 <img src="{{ asset('asset/img/image_a5.jpeg') }}" alt="Image A"
                      class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
-                <img src="{{ asset('asset/img/image_b5.jpeg') }}" alt="Image B"
-                     class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
-            </div>
+             </div>
             <div class="bg-gradient-to-br from-blue-50 to-white shadow-lg shadow-blue-100/50 rounded-xl p-6 mb-10 border border-blue-200 transform hover:scale-105 transition duration-300 ease-in-out">
                 <h3 class="font-semibold text-xl sm:text-2xl text-gray-800 mb-5 border-b-2 border-blue-200 pb-2">
                     Instructions:
@@ -256,15 +252,13 @@
             <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold poppins text-gray-900 mb-6 animate-fade-in">
                 Question 6: AI Image Transformation Challenge
             </h2>
-            <p class="text-gray-600 font-medium poppins max-w-3xl mx-auto mb-10 text-base sm:text-lg leading-relaxed animate-fade-in-delay">
-                Kids will see two images: Image A (original) and Image B (target). The second image looks similar to the first but has a few changes. Your task is to figure out what’s different and create a prompt that would transform Image A into Image B.
+        <p class="text-gray-600 font-medium poppins max-w-3xl mx-auto mb-10 text-base sm:text-lg leading-relaxed animate-fade-in-delay">
+                Kids receive a few words related to a secret story image. They must use those words to prompt an AI image generator and create an image that matches the hidden story.
             </p>
             <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
                 <img src="{{ asset('asset/img/image_a6.jpeg') }}" alt="Image A"
                      class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
-                <img src="{{ asset('asset/img/image_b6.jpeg') }}" alt="Image B"
-                     class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
-            </div>
+             </div>
             <div class="bg-gradient-to-br from-blue-50 to-white shadow-lg shadow-blue-100/50 rounded-xl p-6 mb-10 border border-blue-200 transform hover:scale-105 transition duration-300 ease-in-out">
                 <h3 class="font-semibold text-xl sm:text-2xl text-gray-800 mb-5 border-b-2 border-blue-200 pb-2">
                     Instructions:
@@ -308,13 +302,11 @@
             <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold poppins text-gray-900 mb-6 animate-fade-in">
                 Question 7: AI Image Transformation Challenge
             </h2>
-            <p class="text-gray-600 font-medium poppins max-w-3xl mx-auto mb-10 text-base sm:text-lg leading-relaxed animate-fade-in-delay">
-                Kids will see two images: Image A (original) and Image B (target). The second image looks similar to the first but has a few changes. Your task is to figure out what’s different and create a prompt that would transform Image A into Image B.
+           <p class="text-gray-600 font-medium poppins max-w-3xl mx-auto mb-10 text-base sm:text-lg leading-relaxed animate-fade-in-delay">
+                Kids receive a few words related to a secret story image. They must use those words to prompt an AI image generator and create an image that matches the hidden story.
             </p>
             <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
                 <img src="{{ asset('asset/img/image_a7.jpeg') }}" alt="Image A"
-                     class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
-                <img src="{{ asset('asset/img/image_b7.jpeg') }}" alt="Image B"
                      class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
             </div>
             <div class="bg-gradient-to-br from-blue-50 to-white shadow-lg shadow-blue-100/50 rounded-xl p-6 mb-10 border border-blue-200 transform hover:scale-105 transition duration-300 ease-in-out">
@@ -366,9 +358,7 @@
             <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
                 <img src="{{ asset('asset/img/image_a8.jpeg') }}" alt="Image A"
                      class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
-                <img src="{{ asset('asset/img/image_b8.jpeg') }}" alt="Image B"
-                     class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
-            </div>
+           </div>
             <div class="bg-gradient-to-br from-blue-50 to-white shadow-lg shadow-blue-100/50 rounded-xl p-6 mb-10 border border-blue-200 transform hover:scale-105 transition duration-300 ease-in-out">
                 <h3 class="font-semibold text-xl sm:text-2xl text-gray-800 mb-5 border-b-2 border-blue-200 pb-2">
                     Instructions:
@@ -418,9 +408,7 @@
             <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
                 <img src="{{ asset('asset/img/image_a9.jpeg') }}" alt="Image A"
                      class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
-                <img src="{{ asset('asset/img/image_b9.jpeg') }}" alt="Image B"
-                     class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
-            </div>
+           </div>
             <div class="bg-gradient-to-br from-blue-50 to-white shadow-lg shadow-blue-100/50 rounded-xl p-6 mb-10 border border-blue-200 transform hover:scale-105 transition duration-300 ease-in-out">
                 <h3 class="font-semibold text-xl sm:text-2xl text-gray-800 mb-5 border-b-2 border-blue-200 pb-2">
                     Instructions:
@@ -469,9 +457,7 @@
             <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
                 <img src="{{ asset('asset/img/image_a10.jpeg') }}" alt="Image A"
                      class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
-                <img src="{{ asset('asset/img/image_b10.jpeg') }}" alt="Image B"
-                     class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
-            </div>
+           </div>
             <div class="bg-gradient-to-br from-blue-50 to-white shadow-lg shadow-blue-100/50 rounded-xl p-6 mb-10 border border-blue-200 transform hover:scale-105 transition duration-300 ease-in-out">
                 <h3 class="font-semibold text-xl sm:text-2xl text-gray-800 mb-5 border-b-2 border-blue-200 pb-2">
                     Instructions:

@@ -131,17 +131,35 @@ class DesignController extends Controller
                 ], [
                     'prompt.required' => 'A prompt is required.',
                 ]);
+
                 Log::info('Submitted prompt for Question 4: ' . $prompt);
+
                 try {
                     $promptLower = strtolower($prompt);
-                    $requiredTransformations = ['add a blue balloon', 'remove the cat', 'make the grass green'];
+
+                    // Updated required transformations for the camping image
+                    $requiredTransformations = [
+                        'add a red hat to the boy roasting marshmallows',
+                        'change the campfire to a barbecue grill',
+                        'replace the tent with a small cabin',
+                        'make the scene during daytime with a sunny sky',
+                        'remove one of the trees in the background',
+                        'add a dog sitting near the fire',
+                        'change the girl’s sweater to yellow',
+                        'add marshmallows to the woman’s stick',
+                        'replace the logs with camping chairs',
+                        'add a lantern hanging near the tent'
+                    ];
+
                     $foundTransformations = [];
                     foreach ($requiredTransformations as $transformation) {
-                        if (strpos($promptLower, $transformation) !== false) {
+                        if (strpos($promptLower, strtolower($transformation)) !== false) {
                             $foundTransformations[] = $transformation;
                         }
                     }
+
                     $isCorrect = count($foundTransformations) >= 2;
+
                     if ($isCorrect) {
                         $resultMessage = 'Correct! Your prompt accurately describes the changes needed! Found transformations: ' . implode(', ', $foundTransformations);
                         $currentQuestion = 5;
@@ -162,17 +180,35 @@ class DesignController extends Controller
                 ], [
                     'prompt.required' => 'A prompt is required.',
                 ]);
+
                 Log::info('Submitted prompt for Question 5: ' . $prompt);
+
                 try {
                     $promptLower = strtolower($prompt);
-                    $requiredTransformations = ['add a rainbow', 'remove the clouds', 'make the sun bigger'];
+
+                    // Updated required transformations for the board game image
+                    $requiredTransformations = [
+                        'add sunglasses to the boy',
+                        'change the teddy bear to a robot',
+                        'replace the yellow car with a bicycle',
+                        'add a hat to the woman',
+                        'change the board game to a chessboard',
+                        'remove the mug from the table',
+                        'add a cat sitting on the table',
+                        'change the red truck to a green bus',
+                        'add balloons in the background',
+                        'replace the bookshelf with a window view'
+                    ];
+
                     $foundTransformations = [];
                     foreach ($requiredTransformations as $transformation) {
-                        if (strpos($promptLower, $transformation) !== false) {
+                        if (strpos($promptLower, strtolower($transformation)) !== false) {
                             $foundTransformations[] = $transformation;
                         }
                     }
+
                     $isCorrect = count($foundTransformations) >= 2;
+
                     if ($isCorrect) {
                         $resultMessage = 'Correct! Your prompt accurately describes the changes needed! Found transformations: ' . implode(', ', $foundTransformations);
                         $currentQuestion = 6;
@@ -193,17 +229,35 @@ class DesignController extends Controller
                 ], [
                     'prompt.required' => 'A prompt is required.',
                 ]);
+
                 Log::info('Submitted prompt for Question 6: ' . $prompt);
+
                 try {
                     $promptLower = strtolower($prompt);
-                    $requiredTransformations = ['add a yellow bird', 'remove the fence', 'make the tree taller'];
+
+                    // Updated required transformations for the man helping elderly woman image
+                    $requiredTransformations = [
+                        'add a walking stick to the man',
+                        'change the bag color to red',
+                        'replace the stairs with a ramp',
+                        'add a cat walking beside them',
+                        'change the woman’s dress to blue',
+                        'add flowers along the side of the stairs',
+                        'replace the man’s shoes with sandals',
+                        'add a backpack to the man',
+                        'make the background a park scene',
+                        'add a sun in the sky'
+                    ];
+
                     $foundTransformations = [];
                     foreach ($requiredTransformations as $transformation) {
-                        if (strpos($promptLower, $transformation) !== false) {
+                        if (strpos($promptLower, strtolower($transformation)) !== false) {
                             $foundTransformations[] = $transformation;
                         }
                     }
+
                     $isCorrect = count($foundTransformations) >= 2;
+
                     if ($isCorrect) {
                         $resultMessage = 'Correct! Your prompt accurately describes the changes needed! Found transformations: ' . implode(', ', $foundTransformations);
                         $currentQuestion = 7;
@@ -224,17 +278,35 @@ class DesignController extends Controller
                 ], [
                     'prompt.required' => 'A prompt is required.',
                 ]);
+
                 Log::info('Submitted prompt for Question 7: ' . $prompt);
+
                 try {
                     $promptLower = strtolower($prompt);
-                    $requiredTransformations = ['add a green car', 'remove the house', 'make the road wider'];
+
+                    // Updated required transformations for the family at the beach image
+                    $requiredTransformations = [
+                        'add a beach ball near the family',
+                        'change the father’s shirt to red',
+                        'replace the sea with a swimming pool',
+                        'add sunglasses to the mother',
+                        'change the child’s shorts to blue',
+                        'add a sandcastle in the background',
+                        'replace the clouds with a clear sky',
+                        'add a surfboard leaning on the sand',
+                        'make the waves bigger',
+                        'add a dolphin jumping in the background'
+                    ];
+
                     $foundTransformations = [];
                     foreach ($requiredTransformations as $transformation) {
-                        if (strpos($promptLower, $transformation) !== false) {
+                        if (strpos($promptLower, strtolower($transformation)) !== false) {
                             $foundTransformations[] = $transformation;
                         }
                     }
+
                     $isCorrect = count($foundTransformations) >= 2;
+
                     if ($isCorrect) {
                         $resultMessage = 'Correct! Your prompt accurately describes the changes needed! Found transformations: ' . implode(', ', $foundTransformations);
                         $currentQuestion = 8;
@@ -255,17 +327,35 @@ class DesignController extends Controller
                 ], [
                     'prompt.required' => 'A prompt is required.',
                 ]);
+
                 Log::info('Submitted prompt for Question 8: ' . $prompt);
+
                 try {
                     $promptLower = strtolower($prompt);
-                    $requiredTransformations = ['add a purple flower', 'remove the river', 'make the mountain higher'];
+
+                    // Updated required transformations for the kite-flying beach scene
+                    $requiredTransformations = [
+                        'add a starfish on the sand',
+                        'change the kite color to green and purple',
+                        'replace the seashell with a crab',
+                        'remove the boat from the background',
+                        'add sunglasses to the girl',
+                        'change the dog’s collar to red',
+                        'replace the tree with a palm tree with more coconuts',
+                        'add an extra cloud in the sky',
+                        'change the water color to a darker blue',
+                        'add a beach ball next to the dog'
+                    ];
+
                     $foundTransformations = [];
                     foreach ($requiredTransformations as $transformation) {
-                        if (strpos($promptLower, $transformation) !== false) {
+                        if (strpos($promptLower, strtolower($transformation)) !== false) {
                             $foundTransformations[] = $transformation;
                         }
                     }
+
                     $isCorrect = count($foundTransformations) >= 2;
+
                     if ($isCorrect) {
                         $resultMessage = 'Correct! Your prompt accurately describes the changes needed! Found transformations: ' . implode(', ', $foundTransformations);
                         // Stay on 8 or redirect to results
@@ -290,13 +380,28 @@ class DesignController extends Controller
                 Log::info('Submitted prompt for Question 9: ' . $prompt);
                 try {
                     $promptLower = strtolower($prompt);
-                    $requiredTransformations = ['add a brown dog', 'remove the bridge', 'make the sky cloudy'];
+
+                    // Updated required transformations for the messy-bedroom scene
+                    $requiredTransformations = [
+                        'add a buzzing fly near the boy',
+                        'straighten the wall picture frame',
+                        'close the wardrobe doors',
+                        'remove the yellow sock from the bedframe',
+                        'replace the badminton racket with a football',
+                        'remove the backpack next to the bed',
+                        'change the boy’s shirt to blue',
+                        'add a nightstand beside the bed',
+                        'replace the red green ball with a basketball',
+                        'add a window on the wall'
+                    ];
+
                     $foundTransformations = [];
                     foreach ($requiredTransformations as $transformation) {
-                        if (strpos($promptLower, $transformation) !== false) {
+                        if (strpos($promptLower, strtolower($transformation)) !== false) {
                             $foundTransformations[] = $transformation;
                         }
                     }
+
                     $isCorrect = count($foundTransformations) >= 2;
                     if ($isCorrect) {
                         $resultMessage = 'Correct! Your prompt accurately describes the changes needed! Found transformations: ' . implode(', ', $foundTransformations);
@@ -321,17 +426,32 @@ class DesignController extends Controller
                 Log::info('Submitted prompt for Question 10: ' . $prompt);
                 try {
                     $promptLower = strtolower($prompt);
-                    $requiredTransformations = ['add a pink balloon', 'remove the boat', 'make the grass yellow'];
+
+                    // Updated required transformations for the pirate and parrot scene
+                    $requiredTransformations = [
+                        'change the parrot’s head color to yellow',
+                        'remove the cloud on the right side',
+                        'add stripes to the pirate’s pants',
+                        'change the treasure chest size to smaller',
+                        'remove the boat’s skull flag',
+                        'add a seashell on the sand',
+                        'change the pirate’s headscarf color to blue',
+                        'replace the map with a compass',
+                        'add a palm tree in the background',
+                        'make the parrot wear a pirate hat'
+                    ];
+
                     $foundTransformations = [];
                     foreach ($requiredTransformations as $transformation) {
-                        if (strpos($promptLower, $transformation) !== false) {
+                        if (strpos($promptLower, strtolower($transformation)) !== false) {
                             $foundTransformations[] = $transformation;
                         }
                     }
+
                     $isCorrect = count($foundTransformations) >= 2;
                     if ($isCorrect) {
                         $resultMessage = 'Correct! Your prompt accurately describes the changes needed! Found transformations: ' . implode(', ', $foundTransformations);
-                        $currentQuestion = 10;
+                        $currentQuestion = 10; // stays at 10 or moves depending on your flow
                     } else {
                         $missing = array_diff($requiredTransformations, $foundTransformations);
                         $resultMessage = 'Your prompt needs improvement. Try to include more transformations like: ' . implode(', ', array_slice($missing, 0, 2)) . '. Found transformations: ' . (empty($foundTransformations) ? 'none' : implode(', ', $foundTransformations));
