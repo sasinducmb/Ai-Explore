@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Google\Cloud\Language\V1\Document;
 use Google\Cloud\Language\V1\Document\Type;
-use App\Models\PromptingResult;
+use App\Models\PromptingAnswer;
 use Carbon\Carbon;
 
 class PromptingController extends Controller
@@ -48,15 +48,15 @@ class PromptingController extends Controller
      */
     private function getOrCreateResult($sessionId)
     {
-        $result = PromptingResult::bySession($sessionId)->first();
+        $result = PromptingAnswer::where('session_id', $sessionId)->first();
 
         if (!$result) {
-            $result = PromptingResult::create([
+            $result = PromptingAnswer::create([
                 'session_id' => $sessionId,
-                'name' => Auth::check() ? Auth::user()->name : null, // Save logged-in user's name
+                'name' => Auth::check() ? Auth::user()->name : null,
                 'ip_address' => request()->ip(),
                 'user_agent' => request()->userAgent(),
-                'total_possible_marks' => 60, // For 3 questions
+                'total_possible_marks' => 30, // Updated for 5 questions
             ]);
         }
 
@@ -65,153 +65,130 @@ class PromptingController extends Controller
 
     public function submit(Request $request)
     {
-        $question = $request->input('question');
-        $action = $request->input('action', 'submit');
-        $isCorrect = false;
-        $resultMessage = null;
-        $imoji = null;
-        $currentQuestion = $question;
-        $selectedTopic = $request->input('topic', null);
         $sessionId = session()->getId();
+        $action = $request->input('action', 'submit');
+        $question = $request->input('question', 1);
 
-        // Initialize or retrieve result
-        $result = $this->getOrCreateResult($sessionId);
+        // Handle the finish action from the form
+        if ($action === 'finish') {
+            Log::info('Received finish action with data', $request->all());
 
-        if ($action === 'next') {
-            // Move to the next question without validation
-            if ($question == 1) {
-                $currentQuestion = 2;
-            } elseif ($question == 2) {
-                $currentQuestion = 3;
-            } elseif ($question == 3) {
-                $currentQuestion = 3; // Stay on Question 3
+            // Calculate completion time
+            $gameStartTime = session('game_start_time', now());
+            $completionTime = now()->diffInSeconds($gameStartTime);
+
+            $result = $this->getOrCreateResult($sessionId);
+
+            // Calculate totals from already saved individual questions
+            $totalMarks = 0;
+            for ($i = 1; $i <= 5; $i++) {
+                $totalMarks += $result->{"question_{$i}_marks"} ?? 0;
             }
-        } elseif ($action === 'finish') {
-            // Handle finish action with final marks calculation
-            if ($question == 3) {
-                $request->validate([
-                    'topic' => 'required|string|in:animals,ocean,robot,computers',
-                    'answer' => 'required|string|max:5000',
+
+            $percentage = ($totalMarks / $result->total_possible_marks) * 100;
+            $grade = $this->calculateGrade($percentage);
+
+            // Update final results
+            $result->update([
+                'total_marks' => $totalMarks,
+                'percentage' => $percentage,
+                'grade' => $grade,
+                'completion_time_seconds' => $completionTime,
+                'completed' => true,
+            ]);
+
+            Log::info('Successfully completed quiz for session: ' . $sessionId);
+
+            session([
+                'final_marks' => $totalMarks,
+                'total_possible' => $result->total_possible_marks,
+                'completion_time' => $completionTime,
+            ]);
+
+            session()->flash('success', 'Your answers have been submitted successfully!');
+
+            // Check if this is an AJAX request
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'redirect' => route('prompting.results')
                 ]);
-
-                // Process Question 3 to get the score
-                $analysisResult = $this->processQuestion3($request);
-                $isCorrect = $analysisResult['isCorrect'];
-                $marks = $this->calculateMarks(3, $isCorrect, $request->answer, $request->topic);
-
-                // Save final question result
-                $result = $this->saveQuestionResult(
-                    $sessionId,
-                    3,
-                    $request->answer,
-                    $isCorrect,
-                    $marks,
-                    $analysisResult['analysis'],
-                    $request->topic
-                );
-
-                // Mark as completed and calculate completion time
-                $gameStartTime = session('game_start_time', now());
-                $completionTime = now()->diffInSeconds($gameStartTime);
-
-                $result->update([
-                    'completed' => true,
-                    'completion_time_seconds' => $completionTime,
-                ]);
-
-                // Store final data in session
-                session([
-                    'final_marks' => $result->total_marks,
-                    'total_possible' => $result->total_possible_marks,
-                    'percentage' => $result->percentage,
-                    'grade' => $result->grade,
-                    'completion_time' => $completionTime,
-                ]);
-
-                // Comprehensive logging
-                Log::info('=== FINAL MARKS CALCULATION ===');
-                Log::info('Session ID: ' . $sessionId);
-                Log::info('User Name: ' . ($result->name ?? 'Guest')); // Log user name
-                Log::info('Question 1 Marks: ' . ($result->question_1_marks ?? 0) . '/10');
-                Log::info('Question 2 Marks: ' . ($result->question_2_marks ?? 0) . '/20');
-                Log::info('Question 3 Marks: ' . ($result->question_3_marks ?? 0) . '/30');
-                Log::info('Total Marks: ' . $result->total_marks . '/60');
-                Log::info('Percentage: ' . $result->percentage . '%');
-                Log::info('Grade: ' . $result->grade);
-                Log::info('Completion Time: ' . $result->formatted_completion_time);
-                Log::info('================================');
-
-                return redirect()->route('prompting.results');
             }
-        } else {
-            // Handle submit action with validation and always save
-            if ($question == 1) {
-                $request->validate([
-                    'answer' => 'required|string|in:Grok,Bard,Copilot,ChatGPT,Claude',
-                ]);
-                $isCorrect = $request->answer === 'Bard';
-                $resultMessage = $isCorrect ? 'Correct! Great job!' : 'Answer saved. Moving to the next question.';
-                $imoji = $isCorrect ? 'happy' : 'moderate';
-                $marks = $this->calculateMarks(1, $isCorrect);
 
-                // Save Question 1 result
-                $this->saveQuestionResult($sessionId, 1, $request->answer, $isCorrect, $marks);
-                Log::info('Question 1 Marks: ' . $marks . '/10');
-                $currentQuestion = 2; // Always move to Question 2
-
-            } elseif ($question == 2) {
-                $request->validate([
-                    'answer' => 'required|string|max:5000',
-                ]);
-
-                Log::info('Submitted prompt for Question 2: ' . $request->answer);
-
-                $analysisResult = $this->processQuestion2($request);
-                $isCorrect = $analysisResult['isCorrect'];
-                $marks = $this->calculateMarks(2, $isCorrect, $request->answer);
-
-                // Save Question 2 result
-                $this->saveQuestionResult($sessionId, 2, $request->answer, $isCorrect, $marks, $analysisResult['analysis']);
-
-                $resultMessage = $isCorrect ? 'Correct! Your prompt is relevant and well-structured!' : 'Answer saved. Moving to the next question.';
-                $imoji = $isCorrect ? 'happy' : 'moderate';
-                $currentQuestion = 3; // Always move to Question 3
-
-                Log::info('Question 2 Marks: ' . $marks . '/20');
-
-            } elseif ($question == 3) {
-                $request->validate([
-                    'topic' => 'required|string|in:animals,ocean,robot,computers',
-                    'answer' => 'required|string|max:5000',
-                ]);
-
-                Log::info('Submitted prompt for Question 3: ' . $request->answer . ' | Topic: ' . $request->topic);
-
-                $analysisResult = $this->processQuestion3($request);
-                $isCorrect = $analysisResult['isCorrect'];
-                $marks = $this->calculateMarks(3, $isCorrect, $request->answer, $request->topic);
-
-                // Save Question 3 result
-                $this->saveQuestionResult($sessionId, 3, $request->answer, $isCorrect, $marks, $analysisResult['analysis'], $request->topic);
-
-                $resultMessage = $isCorrect ? "Correct! Your improved prompt is clear, detailed, and relevant to '{$request->topic}'!" : 'Answer saved. You can improve your prompt or finish.';
-                $imoji = $isCorrect ? 'happy' : 'moderate';
-                $currentQuestion = 3; // Stay on Question 3
-
-                Log::info('Question 3 Marks: ' . $marks . '/30');
-            }
+            return redirect()->route('prompting.results');
         }
 
+        // Handle individual question submissions
+        $selectedTopic = $request->input('topic', null);
+        $result = $this->getOrCreateResult($sessionId);
+        $isCorrect = false;
+        $marks = 0;
+        $resultMessage = '';
+        $analysis = null;
+
+        if ($question == 1) {
+            $request->validate([
+                'answer' => 'required|string|in:Grok,Bard,Copilot,ChatGPT,Claude',
+            ]);
+            $isCorrect = $request->input('answer') === 'Bard';
+            $marks = $this->calculateMarks(1, $isCorrect);
+            $resultMessage = $isCorrect ? 'Correct! Great job!' : 'Answer saved. Moving to the next question.';
+
+            $this->saveQuestionResult($sessionId, 1, $request->input('answer'), $isCorrect, $marks);
+            Log::info('Question 1 Marks: ' . $marks . '/6');
+
+        } elseif ($question >= 2 && $question <= 5) {
+            $request->validate([
+                'answer' => 'required|string|max:5000',
+            ]);
+
+            Log::info("Submitted prompt for Question {$question}: " . $request->input('answer'));
+
+            if ($question == 2) {
+                // Create a new request object with the answer for processing
+                $processRequest = new Request(['answer' => $request->input('answer')]);
+                $analysisResult = $this->processQuestion2($processRequest);
+            } else {
+                // For questions 3-5, use similar logic but with simpler validation
+                $processRequest = new Request([
+                    'answer' => $request->input('answer'),
+                    'topic' => 'general' // Default topic for questions 3-5
+                ]);
+                $analysisResult = $this->processQuestion3($processRequest);
+            }
+
+            $isCorrect = $analysisResult['isCorrect'];
+            $marks = $this->calculateMarks($question, $isCorrect, $request->input('answer'));
+            $analysis = $analysisResult['analysis'] ?? null;
+
+            $this->saveQuestionResult($sessionId, $question, $request->input('answer'), $isCorrect, $marks, $analysis);
+
+            $resultMessage = $isCorrect ? 'Correct! Your prompt is relevant and well-structured!' : 'Answer saved. Moving to the next question.';
+            Log::info("Question {$question} Marks: {$marks}/6");
+        }
+
+        // Check if this is an AJAX request
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'isCorrect' => $isCorrect,
+                'marks' => $marks,
+                'message' => $resultMessage,
+                'question' => $question
+            ]);
+        }
+
+        // For non-AJAX requests, return the view (fallback)
         return view('prompting.prompting', [
-            'showPopup' => $action === 'submit',
+            'showPopup' => false,
             'isCorrect' => $isCorrect,
-            'imoji' => $imoji,
             'resultMessage' => $resultMessage,
-            'currentQuestion' => $currentQuestion,
+            'currentQuestion' => min($question + 1, 5),
             'selectedTopic' => $selectedTopic,
             'result' => $result,
         ]);
     }
+
     /**
      * Calculate marks for each question
      */
@@ -221,29 +198,32 @@ class PromptingController extends Controller
 
         switch ($questionNumber) {
             case 1:
-                // Question 1: Simple MCQ - 10 marks for correct answer
-                $marks = $isCorrect ? 10 : 0;
+                // Question 1: Simple MCQ - 6 marks for correct answer
+                $marks = $isCorrect ? 6 : 0;
                 break;
 
             case 2:
-                // Question 2: Reverse prompt builder - up to 20 marks
+            case 3:
+            case 4:
+            case 5:
+                // Questions 2-5: Each worth 6 marks
                 if ($isCorrect) {
-                    $marks = 20;
+                    $marks = 6;
                 } else {
                     // Partial marks based on answer quality
                     $textLower = strtolower($answer);
                     $partialScore = 0;
 
-                    // Check for question words (5 marks)
+                    // Check for question words (2 marks)
                     if (strpos($textLower, 'what') !== false ||
                         strpos($textLower, 'explain') !== false ||
                         strpos($textLower, 'tell') !== false ||
                         strpos($textLower, 'describe') !== false ||
                         strpos($textLower, '?') !== false) {
-                        $partialScore += 5;
+                        $partialScore += 2;
                     }
 
-                    // Check for relevant keywords (up to 10 marks)
+                    // Check for relevant keywords (up to 3 marks)
                     $keywords = ['electric', 'vehicle', 'car', 'ev', 'advantages', 'disadvantages', 'benefits', 'pollution', 'environment', 'charging'];
                     $foundKeywords = 0;
                     foreach ($keywords as $keyword) {
@@ -251,83 +231,31 @@ class PromptingController extends Controller
                             $foundKeywords++;
                         }
                     }
-                    $partialScore += min($foundKeywords * 2, 10);
+                    $partialScore += min($foundKeywords, 3);
 
-                    // Minimum effort bonus (3 marks for trying)
+                    // Minimum effort bonus (1 mark for trying)
                     if (strlen(trim($answer)) > 20) {
-                        $partialScore += 3;
+                        $partialScore += 1;
                     }
 
-                    $marks = min($partialScore, 18); // Max 18 for partial, 20 for full correct
-                }
-                break;
-
-            case 3:
-                // Question 3: Super question builder - up to 30 marks
-                if ($isCorrect) {
-                    $marks = 30;
-                } else {
-                    // Detailed partial scoring
-                    $textLower = strtolower($answer);
-                    $partialScore = 0;
-
-                    // Topic inclusion (5 marks)
-                    if (strpos($textLower, strtolower($topic)) !== false) {
-                        $partialScore += 5;
-                    }
-
-                    // Question format (5 marks)
-                    if (strpos($textLower, 'what') !== false ||
-                        strpos($textLower, 'how') !== false ||
-                        strpos($textLower, 'why') !== false ||
-                        strpos($textLower, 'explain') !== false ||
-                        strpos($textLower, 'describe') !== false ||
-                        strpos($textLower, '?') !== false) {
-                        $partialScore += 5;
-                    }
-
-                    // Clarity keywords (up to 8 marks)
-                    $clarityKeywords = ['explain', 'describe', 'what', 'how', 'why', 'details', 'example', 'specific'];
-                    $clarityCount = 0;
-                    foreach ($clarityKeywords as $keyword) {
-                        if (strpos($textLower, $keyword) !== false) {
-                            $clarityCount++;
-                        }
-                    }
-                    $partialScore += min($clarityCount * 2, 8);
-
-                    // Topic-specific keywords (up to 8 marks)
-                    $topicKeywords = [
-                        'animals' => ['wildlife', 'species', 'habitat', 'behavior', 'migration', 'adaptation'],
-                        'ocean' => ['marine', 'sea', 'coral', 'ecosystem', 'fish', 'waves'],
-                        'robot' => ['robotics', 'automation', 'programming', 'machine', 'artificial', 'intelligence'],
-                        'computers' => ['hardware', 'software', 'programming', 'processor', 'network', 'data']
-                    ];
-
-                    if (isset($topicKeywords[$topic])) {
-                        $topicScore = 0;
-                        foreach ($topicKeywords[$topic] as $keyword) {
-                            if (strpos($textLower, $keyword) !== false) {
-                                $topicScore++;
-                            }
-                        }
-                        $partialScore += min($topicScore * 2, 8);
-                    }
-
-                    // Length and effort bonus (4 marks)
-                    if (strlen(trim($answer)) > 50) {
-                        $partialScore += 2;
-                    }
-                    if (strlen(trim($answer)) > 100) {
-                        $partialScore += 2;
-                    }
-
-                    $marks = min($partialScore, 28); // Max 28 for partial, 30 for full correct
+                    $marks = min($partialScore, 5); // Max 5 for partial, 6 for full correct
                 }
                 break;
         }
 
         return $marks;
+    }
+
+    /**
+     * Calculate grade based on percentage
+     */
+    private function calculateGrade($percentage)
+    {
+        if ($percentage >= 90) return 'A';
+        if ($percentage >= 80) return 'B';
+        if ($percentage >= 70) return 'C';
+        if ($percentage >= 60) return 'D';
+        return 'F';
     }
 
     /**
@@ -344,20 +272,29 @@ class PromptingController extends Controller
             "question_{$questionNumber}_completed_at" => now(),
         ];
 
-        if ($analysis) {
+        if ($analysis !== null) {
             $data["question_{$questionNumber}_analysis"] = $analysis;
         }
 
-        if ($topic) {
-            $data["question_{$questionNumber}_topic"] = $topic;
+        $result->update($data);
+
+        // Update totals
+        $totalMarks = 0;
+        for ($i = 1; $i <= 5; $i++) {
+            $totalMarks += $result->{"question_{$i}_marks"} ?? 0;
         }
 
-        $result->update($data);
-        $result->updateTotals();
+        $percentage = ($totalMarks / $result->total_possible_marks) * 100;
+        $grade = $this->calculateGrade($percentage);
+
+        $result->update([
+            'total_marks' => $totalMarks,
+            'percentage' => $percentage,
+            'grade' => $grade,
+        ]);
 
         return $result;
     }
-
 
     private function processQuestion2($request)
     {
@@ -676,7 +613,7 @@ class PromptingController extends Controller
     public function results()
     {
         $sessionId = session()->getId();
-        $result = PromptingResult::bySession($sessionId)->first();
+        $result = PromptingAnswer::where('session_id', $sessionId)->first();
 
         if (!$result) {
             return redirect()->route('prompting.show')->with('error', 'No results found. Please complete the prompting tool first.');
@@ -684,25 +621,77 @@ class PromptingController extends Controller
 
         return view('prompting.results', [
             'result' => $result,
-            'statistics' => PromptingResult::getStatistics(),
+            'statistics' => PromptingAnswer::getStatistics(),
         ]);
     }
 
     public function showResult($sessionId)
     {
-        $result = PromptingResult::where('session_id', $sessionId)->firstOrFail();
+        $result = PromptingAnswer::where('session_id', $sessionId)->firstOrFail();
         return view('admin.results.show', compact('result'));
+    }
+
+    /**
+     * Restart the prompting quiz
+     */
+    public function restart(Request $request)
+    {
+        $sessionId = session()->getId();
+
+        // Find existing result
+        $result = PromptingAnswer::where('session_id', $sessionId)->first();
+
+        if ($result) {
+            // Reset all answers and progress
+            $result->update([
+                'question_1_answer' => null,
+                'question_1_correct' => false,
+                'question_1_marks' => 0,
+                'question_1_completed_at' => null,
+                'question_2_answer' => null,
+                'question_2_correct' => false,
+                'question_2_marks' => 0,
+                'question_2_analysis' => null,
+                'question_2_completed_at' => null,
+                'question_3_answer' => null,
+                'question_3_correct' => false,
+                'question_3_marks' => 0,
+                'question_3_analysis' => null,
+                'question_3_completed_at' => null,
+                'question_4_answer' => null,
+                'question_4_correct' => false,
+                'question_4_marks' => 0,
+                'question_4_analysis' => null,
+                'question_4_completed_at' => null,
+                'question_5_answer' => null,
+                'question_5_correct' => false,
+                'question_5_marks' => 0,
+                'question_5_analysis' => null,
+                'question_5_completed_at' => null,
+                'total_marks' => 0,
+                'percentage' => 0,
+                'grade' => null,
+                'completion_time_seconds' => null,
+                'completed' => false,
+            ]);
+        }
+
+        // Reset session data
+        session()->forget(['game_start_time', 'final_marks', 'total_possible', 'completion_time']);
+        session(['game_start_time' => now()]);
+
+        session()->flash('success', 'Quiz has been restarted. Good luck!');
+
+        return redirect()->route('prompting.show');
     }
 
     public function __destruct()
     {
         // Close the Google Cloud NLP client connection
         if ($this->languageClient) {
-            try {
-                $this->languageClient->close();
-            } catch (\Exception $e) {
-                Log::error('Failed to close Google Cloud NLP client: ' . $e->getMessage());
-            }
+            // If the client has a close() method, call it here. Otherwise, just unset.
+             $this->languageClient->close(); // Uncomment if available
+            // No try-catch needed since nothing is being executed that throws
         }
     }
 }

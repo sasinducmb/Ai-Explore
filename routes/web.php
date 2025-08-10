@@ -63,6 +63,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/prompting', [PromptingController::class, 'show'])->name('prompting.show');
     Route::post('/prompting/submit', [PromptingController::class, 'submit'])->name('prompting.submit');
     Route::get('/prompting/results', [PromptingController::class, 'results'])->name('prompting.results');
+    Route::match(['GET', 'POST'], '/prompting/restart', [PromptingController::class, 'restart'])->name('prompting.restart');
 
     // Design Tools
     Route::get('/design-tools', [DesignController::class, 'show'])->name('design.tools');
