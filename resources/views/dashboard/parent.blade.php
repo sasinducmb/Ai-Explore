@@ -1,6 +1,8 @@
 @extends('layout.app')
 
-@section('title', 'Parent Dashboard')
+@section('title')
+{{ __('My Dashboard') }}
+@endsection
 
 @section('content')
 @include('layout.nav')

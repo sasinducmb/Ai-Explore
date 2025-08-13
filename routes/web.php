@@ -8,6 +8,7 @@ use App\Http\Controllers\DesignController;
 use App\Http\Controllers\PromptingController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\GeminiChatbotController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +51,11 @@ Route::middleware(['auth'])->group(function () {
         return view('dashboards.parent');
     })->name('parent.dashboard');
 
+    // User Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/design-results/{id}', [DashboardController::class, 'showDesignResult'])->name('dashboard.design.show');
+    Route::get('/dashboard/prompting-results/{id}', [DashboardController::class, 'showPromptingResult'])->name('dashboard.prompting.show');
+
     // Static Pages
     Route::view('/learn-ai-tools', 'learn-ai-tools')->name('learn-ai-tools');
     Route::view('/explore-ai-tools', 'explore-ai-tools')->name('explore-ai-tools');
@@ -80,5 +86,33 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
         Route::get('/design-results/{id}', [AdminController::class, 'showDesignResult'])->name('admin.design.show');
         Route::get('/prompting-results/{id}', [AdminController::class, 'showPromptingResult'])->name('admin.prompting.show');
+    });
+
+    // Session management routes
+    Route::middleware(['auth'])->group(function () {
+        Route::post('/extend-session', [App\Http\Controllers\SessionController::class, 'extendSession'])->name('session.extend');
+        Route::post('/update-activity', [App\Http\Controllers\SessionController::class, 'updateActivity'])->name('session.activity');
+        Route::get('/session-status', [App\Http\Controllers\SessionController::class, 'getSessionStatus'])->name('session.status');
+    });
+
+    // Apply session timeout to authenticated routes (except admin)
+    Route::middleware(['auth', 'session.timeout'])->group(function () {
+        // Parent Dashboard Routes
+        Route::get('/parent/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('parent.dashboard');
+        Route::get('/dashboard/design-results/{id}', [App\Http\Controllers\DashboardController::class, 'showDesignResult'])->name('dashboard.design.show');
+        Route::get('/dashboard/prompting-results/{id}', [App\Http\Controllers\DashboardController::class, 'showPromptingResult'])->name('dashboard.prompting.show');
+
+        // Design and Prompting Tools
+        Route::get('/design-tools', [App\Http\Controllers\DesignController::class, 'show'])->name('design.tools');
+        Route::post('/design-tools', [App\Http\Controllers\DesignController::class, 'submit'])->name('design.submit');
+        Route::get('/prompting', [App\Http\Controllers\PromptingController::class, 'show'])->name('prompting.show');
+        Route::post('/prompting', [App\Http\Controllers\PromptingController::class, 'submit'])->name('prompting.submit');
+    });
+
+    // Admin routes without timeout
+    Route::middleware(['auth'])->prefix('admin')->group(function () {
+        Route::get('/dashboard', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('admin.dashboard');
+        Route::get('/design-results/{id}', [App\Http\Controllers\AdminController::class, 'showDesignResult'])->name('admin.design.show');
+        Route::get('/prompting-results/{id}', [App\Http\Controllers\AdminController::class, 'showPromptingResult'])->name('admin.prompting.show');
     });
 });

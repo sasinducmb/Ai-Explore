@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class DesignController extends Controller
 {
@@ -39,6 +41,9 @@ class DesignController extends Controller
             // Calculate total marks from session or default values
             $totalMarks = session('total_design_marks', 0);
             $totalPossible = 60; // 6 marks per question × 10 questions
+
+            // Save to database
+            $this->saveToDatabase($totalMarks, $totalPossible, $completionTime);
 
             session([
                 'final_marks' => $totalMarks,
@@ -630,5 +635,47 @@ class DesignController extends Controller
     {
         $currentTotal = session('total_design_marks', 0);
         session(['total_design_marks' => $currentTotal + $newMarks]);
+    }
+
+    /**
+     * Save results to database
+     */
+    private function saveToDatabase($totalMarks, $totalPossible, $completionTime)
+    {
+        try {
+            if (DB::getSchemaBuilder()->hasTable('design_answers')) {
+                $percentage = ($totalMarks / $totalPossible) * 100;
+                $grade = $this->calculateGrade($percentage);
+
+                DB::table('design_answers')->insert([
+                    'name' => Auth::check() ? Auth::user()->name : null,
+                    'session_id' => session()->getId(),
+                    'total_marks' => $totalMarks,
+                    'total_possible_marks' => $totalPossible,
+                    'percentage' => $percentage,
+                    'grade' => $grade,
+                    'completion_time_seconds' => $completionTime,
+                    'completed' => true,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        } catch (\Exception $e) {
+            \Log::error('Error saving design results to database: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Calculate grade based on percentage
+     */
+    private function calculateGrade($percentage)
+    {
+        if ($percentage >= 90) return 'A';
+        if ($percentage >= 80) return 'B';
+        if ($percentage >= 70) return 'C';
+        if ($percentage >= 60) return 'D';
+        return 'F';
     }
 }
