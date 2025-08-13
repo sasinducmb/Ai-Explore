@@ -11,9 +11,10 @@
         </div>
         <nav class="mt-6">
             <a href="{{ route('parent.dashboard') }}" class="block px-6 py-3 text-gray-700 hover:bg-blue-100">Dashboard</a>
+            <a href="{{ route('home') }}" class="block px-6 py-3 text-gray-700 hover:bg-blue-100">Home</a>
             <a href="{{ route('explore-ai-tools') }}" class="block px-6 py-3 text-gray-700 hover:bg-blue-100">Explore AI Tools</a>
-            <a href="#" class="block px-6 py-3 text-gray-700 hover:bg-blue-100">Progress Reports</a>
-            <a href="#" class="block px-6 py-3 text-gray-700 hover:bg-blue-100">Settings</a>
+            <a href="{{ route('learn-ai-tools') }}" class="block px-6 py-3 text-gray-700 hover:bg-blue-100">Learn AI Tools</a>
+            <a href="{{ route('chat-with-ai') }}" class="block px-6 py-3 text-gray-700 hover:bg-blue-100">Chat With AI</a>
         </nav>
     </aside>
 
