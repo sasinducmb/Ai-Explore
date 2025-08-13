@@ -75,8 +75,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/gemini', [GeminiChatbotController::class, 'index'])->name('gemini.index');
     Route::post('/gemini/chat', [GeminiChatbotController::class, 'chatSimple'])->name('gemini.chat.send');
 
-
-
-    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    Route::get('/admin/results/{session_id}', [AdminController::class, 'showResult'])->name('admin.results.show');
+    // Admin Routes
+    Route::prefix('admin')->group(function () {
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+        Route::get('/design-results/{id}', [AdminController::class, 'showDesignResult'])->name('admin.design.show');
+        Route::get('/prompting-results/{id}', [AdminController::class, 'showPromptingResult'])->name('admin.prompting.show');
+    });
 });
