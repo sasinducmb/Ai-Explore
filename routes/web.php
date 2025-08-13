@@ -68,7 +68,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Design Tools
     Route::get('/design-tools', [DesignController::class, 'show'])->name('design.tools');
-    Route::post('/design-tools/submit', [DesignController::class, 'submit'])->name('design.submit');
+    Route::post('/design-tools', [DesignController::class, 'submit'])->name('design.submit');
     Route::get('/design-results', [DesignController::class, 'results'])->name('design.results');
 
     // Gemini Chatbot

@@ -32,6 +32,21 @@ class DesignController extends Controller
                 $currentQuestion = $TOTAL_QUESTIONS;
             }
         } elseif ($action === 'finish') {
+            // Calculate completion time and final results
+            $gameStartTime = session('game_start_time', now());
+            $completionTime = now()->diffInSeconds($gameStartTime);
+
+            // Calculate total marks from session or default values
+            $totalMarks = session('total_design_marks', 0);
+            $totalPossible = 60; // 6 marks per question × 10 questions
+
+            session([
+                'final_marks' => $totalMarks,
+                'total_possible' => $totalPossible,
+                'completion_time' => $completionTime,
+            ]);
+
+            session()->flash('success', 'Design challenge completed successfully!');
             return redirect()->route('design.results');
         } else {
             if ($question == 1) {
@@ -39,6 +54,14 @@ class DesignController extends Controller
                 $marks = 6;
                 $resultMessage = 'Great job on your drawing! Move to the next question.';
                 $currentQuestion = 2;
+
+                // Store marks in session
+                $this->updateSessionMarks($marks);
+
+                // Set start time if not exists
+                if (!session()->has('game_start_time')) {
+                    session(['game_start_time' => now()]);
+                }
             } elseif ($question == 2) {
                 // Question 2: AI Picture from Clues with single prompt
                 $request->validate([
@@ -73,6 +96,7 @@ class DesignController extends Controller
                         $marks = 6;
                         $resultMessage = 'Correct! Your prompt is well-suited for the secret story image! Found keywords: ' . implode(', ', $uniqueKeywords);
                         $currentQuestion = 3; // Move to Question 3
+                        $this->updateSessionMarks($marks);
                     } else {
                         // Calculate partial marks
                         $partialScore = 0;
@@ -135,6 +159,7 @@ class DesignController extends Controller
                         $marks = 6;
                         $resultMessage = 'Correct! Your prompt is well-suited for the camping scene! Found keywords: ' . implode(', ', $uniqueKeywords);
                         $currentQuestion = 4;
+                        $this->updateSessionMarks($marks);
                     } else {
                         // Calculate partial marks
                         $partialScore = 0;
@@ -197,6 +222,7 @@ class DesignController extends Controller
                         $marks = 6;
                         $resultMessage = 'Correct! Your prompt is well-suited for the family game scene! Found keywords: ' . implode(', ', $uniqueKeywords);
                         $currentQuestion = 5;
+                        $this->updateSessionMarks($marks);
                     } else {
                         // Calculate partial marks
                         $partialScore = 0;
@@ -259,6 +285,7 @@ class DesignController extends Controller
                         $marks = 6;
                         $resultMessage = 'Correct! Your prompt is well-suited for the helping scene! Found keywords: ' . implode(', ', $uniqueKeywords);
                         $currentQuestion = 6;
+                        $this->updateSessionMarks($marks);
                     } else {
                         // Calculate partial marks
                         $partialScore = 0;
@@ -321,6 +348,7 @@ class DesignController extends Controller
                         $marks = 6;
                         $resultMessage = 'Correct! Your prompt is well-suited for the beach family scene! Found keywords: ' . implode(', ', $uniqueKeywords);
                         $currentQuestion = 7;
+                        $this->updateSessionMarks($marks);
                     } else {
                         // Calculate partial marks
                         $partialScore = 0;
@@ -373,6 +401,7 @@ class DesignController extends Controller
                         $marks = 6;
                         $resultMessage = 'Correct! Your prompt accurately describes the changes needed! Found transformations: ' . implode(', ', $foundTransformations);
                         $currentQuestion = 8;
+                        $this->updateSessionMarks($marks);
                     } else {
                         // Calculate partial marks
                         $partialScore = 0;
@@ -485,6 +514,7 @@ class DesignController extends Controller
                         $marks = 6;
                         $resultMessage = 'Correct! Your prompt accurately describes the changes needed! Found transformations: ' . implode(', ', $foundTransformations);
                         $currentQuestion = 10;
+                        $this->updateSessionMarks($marks);
                     } else {
                         // Calculate partial marks
                         $partialScore = 0;
@@ -587,7 +617,18 @@ class DesignController extends Controller
 
     public function results()
     {
-        session()->forget('current_question');
-        return view('design-results');
+        // Clear session question data but keep final results
+        session()->forget(['current_question', 'game_start_time']);
+
+        return view('design.design-results');
+    }
+
+    /**
+     * Update session marks total
+     */
+    private function updateSessionMarks($newMarks)
+    {
+        $currentTotal = session('total_design_marks', 0);
+        session(['total_design_marks' => $currentTotal + $newMarks]);
     }
 }
