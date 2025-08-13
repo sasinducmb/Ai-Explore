@@ -21,8 +21,10 @@ class SessionTimeout
         if (Auth::check()) {
             $user = Auth::user();
 
-            // Skip timeout for admin users
-            if ($user->email === 'admin@admin.com' || ($user->is_admin ?? false)) {
+            // Skip timeout for admin users - check both email and role
+            if ($user->email === 'admin@example.com' ||
+                ($user->role ?? null) === 'ADMIN' ||
+                ($user->is_admin ?? false)) {
                 return $next($request);
             }
 

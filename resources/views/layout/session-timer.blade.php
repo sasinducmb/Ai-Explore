@@ -1,7 +1,9 @@
 @auth
 @php
     $user = Auth::user();
-    $isAdmin = $user->email === 'admin@admin.com' || ($user->is_admin ?? false);
+    $isAdmin = $user->email === 'admin@example.com' ||
+               ($user->role ?? null) === 'ADMIN' ||
+               ($user->is_admin ?? false);
 @endphp
 
 @if(!$isAdmin)

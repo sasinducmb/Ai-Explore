@@ -21,8 +21,10 @@ class SessionController extends Controller
         if (Auth::check()) {
             $user = Auth::user();
 
-            // Skip for admin users
-            if ($user->email === 'admin@admin.com' || ($user->is_admin ?? false)) {
+            // Skip for admin users - check both email and role
+            if ($user->email === 'admin@admin.com' ||
+                ($user->role ?? null) === 'ADMIN' ||
+                ($user->is_admin ?? false)) {
                 return response()->json(['success' => false, 'message' => 'Admin sessions do not expire']);
             }
 
@@ -47,8 +49,10 @@ class SessionController extends Controller
         if (Auth::check()) {
             $user = Auth::user();
 
-            // Skip for admin users
-            if ($user->email === 'admin@admin.com' || ($user->is_admin ?? false)) {
+            // Skip for admin users - check both email and role
+            if ($user->email === 'admin@example.com' ||
+                ($user->role ?? null) === 'ADMIN' ||
+                ($user->is_admin ?? false)) {
                 return response()->json(['success' => true, 'message' => 'Admin activity tracking skipped']);
             }
 
@@ -72,8 +76,10 @@ class SessionController extends Controller
         if (Auth::check()) {
             $user = Auth::user();
 
-            // Skip for admin users
-            if ($user->email === 'admin@admin.com' || ($user->is_admin ?? false)) {
+            // Skip for admin users - check both email and role
+            if ($user->email === 'admin@admin.com' ||
+                ($user->role ?? null) === 'ADMIN' ||
+                ($user->is_admin ?? false)) {
                 return response()->json([
                     'success' => true,
                     'is_admin' => true,
