@@ -225,12 +225,9 @@
 <!-- Popup for result -->
 <div id="result-popup"
      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center {{ isset($showPopup) && $showPopup ? '' : 'hidden' }}">
-    <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg text-center w-full max-w-xs sm:max-w-sm">
-        <div id="result-icon" class="text-5xl sm:text-6xl mb-4">{{ isset($isCorrect) && $isCorrect ? '😊' : '😢' }}</div>
-        <div id="result-icon" class="mb-4">
-            <video autoplay loop muted playsinline class="w-full h-auto max-h-40 mx-auto">
-                    <source src="{{ asset('img/svg/happy.mp4') }}" type="video/mp4">
-            </video>
+    <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg text-center w-full max-w-md sm:max-w-lg">
+        <div id="result-image" class="mb-4">
+            <img id="popup-image" src="" alt="Result" class="w-64 h-64 mx-auto object-contain">
         </div>
         <p id="result-message" class="text-base sm:text-lg font-medium text-gray-800">
             {{ $resultMessage ?? 'An error occurred. Please try again.' }}
@@ -280,9 +277,81 @@
         });
     });
 
+    // Function to show question
+    function showQuestion(n) {
+        [question1, question2, question3, question4, question5].forEach((q, idx) => {
+            if (q) q.classList.toggle('hidden', idx !== n - 1);
+        });
+    }
+
+    // Function to show result popup with appropriate image
+    function showResultPopup(isCorrect, message, marks) {
+        const popup = document.getElementById('result-popup');
+        const popupImage = document.getElementById('popup-image');
+        const resultMessage = document.getElementById('result-message');
+
+        console.log('Showing popup with:', { isCorrect, message, marks });
+
+        // Clear any existing content
+        const existingEmoji = document.getElementById('popup-emoji');
+        if (existingEmoji) {
+            existingEmoji.remove();
+        }
+
+        // Try to load image, fallback to emoji if it fails
+        let imageSrc = '';
+        let fallbackEmoji = '';
+
+        if (isCorrect) {
+            imageSrc = '{{ asset("asset/img/svg/happy.gif") }}';
+            fallbackEmoji = '😊';
+        } else if (marks >= 3) {
+            imageSrc = '{{ asset("asset/img/svg/moderate.gif") }}';
+            fallbackEmoji = '🤔';
+        } else {
+            imageSrc = '{{ asset("asset/img/svg/sad.gif") }}';
+            fallbackEmoji = '😢';
+        }
+
+        console.log('Attempting to load image:', imageSrc);
+
+        // Test if image exists, otherwise use emoji
+        const testImage = new Image();
+        testImage.onload = function() {
+            console.log('Image loaded successfully');
+            popupImage.src = imageSrc;
+            popupImage.style.display = 'block';
+            popupImage.className = 'w-64 h-64 mx-auto object-contain';
+        };
+        testImage.onerror = function() {
+            console.warn('Image not found, using emoji fallback');
+            showEmojiInstead();
+        };
+
+        // Function to show emoji fallback
+        function showEmojiInstead() {
+            popupImage.style.display = 'none';
+            // Create emoji element
+            const emojiDiv = document.createElement('div');
+            emojiDiv.className = 'text-10xl mb-4';
+            emojiDiv.textContent = fallbackEmoji;
+            emojiDiv.id = 'popup-emoji';
+
+            popupImage.parentNode.insertBefore(emojiDiv, popupImage);
+        }
+
+        // Load the image
+        testImage.src = imageSrc;
+
+        resultMessage.textContent = message;
+        popup.classList.remove('hidden');
+
+        // Removed auto-close functionality - popup now only closes when user clicks the close button
+    }
+
     // Function to submit individual question
     function submitQuestion(questionNumber, answer, callback) {
-        console.log('Submitting question', questionNumber, 'with answer:', answer); // Debug log
+        console.log('Submitting question', questionNumber, 'with answer:', answer);
 
         const formData = new FormData();
         formData.append('_token', '{{ csrf_token() }}');
@@ -298,23 +367,22 @@
             }
         })
         .then(response => {
-            console.log('Response status:', response.status); // Debug log
+            console.log('Response status:', response.status);
             return response.json();
         })
         .then(data => {
-            console.log('Response data:', data); // Debug log
+            console.log('Response data:', data);
+            if (data.success) {
+                // Show popup with result
+                showResultPopup(data.isCorrect || false, data.message || 'Response received', data.marks || 0);
+            }
             if (callback) callback(data);
         })
         .catch(error => {
             console.error('Error:', error);
+            // Show error popup
+            showResultPopup(false, 'An error occurred. Please try again.', 0);
             if (callback) callback(null);
-        });
-    }
-
-    // Function to show question
-    function showQuestion(n) {
-        [question1, question2, question3, question4, question5].forEach((q, idx) => {
-            if (q) q.classList.toggle('hidden', idx !== n - 1);
         });
     }
 
@@ -326,9 +394,17 @@
 
             submitQuestion(1, answerInput.value, function(response) {
                 nextBtn1.textContent = 'Next';
-                nextBtn1.disabled = false; // Re-enable button
+                nextBtn1.disabled = false;
                 if (response && response.success) {
-                    showQuestion(2);
+                    // Wait for user to close popup manually before moving to next question
+                    const checkPopupClosed = setInterval(() => {
+                        if (popup.classList.contains('hidden')) {
+                            clearInterval(checkPopupClosed);
+                            setTimeout(() => {
+                                showQuestion(2);
+                            }, 100);
+                        }
+                    }, 100);
                 } else {
                     console.error('Failed to save question 1');
                 }
@@ -346,7 +422,15 @@
                 nextBtn2.textContent = 'Next';
                 nextBtn2.disabled = false;
                 if (response && response.success) {
-                    showQuestion(3);
+                    // Wait for user to close popup manually before moving to next question
+                    const checkPopupClosed = setInterval(() => {
+                        if (popup.classList.contains('hidden')) {
+                            clearInterval(checkPopupClosed);
+                            setTimeout(() => {
+                                showQuestion(3);
+                            }, 100);
+                        }
+                    }, 100);
                 } else {
                     console.error('Failed to save question 2');
                 }
@@ -364,7 +448,15 @@
                 nextBtn3.textContent = 'Next';
                 nextBtn3.disabled = false;
                 if (response && response.success) {
-                    showQuestion(4);
+                    // Wait for user to close popup manually before moving to next question
+                    const checkPopupClosed = setInterval(() => {
+                        if (popup.classList.contains('hidden')) {
+                            clearInterval(checkPopupClosed);
+                            setTimeout(() => {
+                                showQuestion(4);
+                            }, 100);
+                        }
+                    }, 100);
                 } else {
                     console.error('Failed to save question 3');
                 }
@@ -382,7 +474,15 @@
                 nextBtn4.textContent = 'Next';
                 nextBtn4.disabled = false;
                 if (response && response.success) {
-                    showQuestion(5);
+                    // Wait for user to close popup manually before moving to next question
+                    const checkPopupClosed = setInterval(() => {
+                        if (popup.classList.contains('hidden')) {
+                            clearInterval(checkPopupClosed);
+                            setTimeout(() => {
+                                showQuestion(5);
+                            }, 100);
+                        }
+                    }, 100);
                 } else {
                     console.error('Failed to save question 4');
                 }
@@ -457,21 +557,21 @@
                     finishBtn.disabled = false;
                     finishBtn.textContent = 'Finish';
                 }
-            });
-        }
-    });
+            });On page load
+        }w.onload = function() {
+    });        if ({{ isset($showPopup) && $showPopup ? 'true' : 'false' }}) {
+ popup.classList.remove('hidden');
+    // Handle popup close        }
 
-    // Handle popup close
-    closePopupBtn.addEventListener('click', function() {
-        popup.classList.add('hidden');
-    });
 
-    // On page load
-    window.onload = function() {
-        if ({{ isset($showPopup) && $showPopup ? 'true' : 'false' }}) {
-            popup.classList.remove('hidden');
-        }
 
+
+
+
+
+
+
+@endsection</script>    });        });    });        popup.classList.add('hidden');    closePopupBtn.addEventListener('click', function() {
         const currentQuestion = {{ isset($currentQuestion) ? $currentQuestion : 1 }};
         showQuestion(currentQuestion);
     };

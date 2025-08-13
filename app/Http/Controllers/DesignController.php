@@ -21,6 +21,7 @@ class DesignController extends Controller
         $resultMessage = null;
         $currentQuestion = $question;
         $prompt = $request->input('prompt', '');
+        $marks = 0; // Add marks calculation
 
         $TOTAL_QUESTIONS = 10;
 
@@ -35,6 +36,7 @@ class DesignController extends Controller
         } else {
             if ($question == 1) {
                 $isCorrect = true;
+                $marks = 6;
                 $resultMessage = 'Great job on your drawing! Move to the next question.';
                 $currentQuestion = 2;
             } elseif ($question == 2) {
@@ -68,9 +70,17 @@ class DesignController extends Controller
                     $isCorrect = count($uniqueKeywords) >= 2 && $hasQuestionPattern;
 
                     if ($isCorrect) {
+                        $marks = 6;
                         $resultMessage = 'Correct! Your prompt is well-suited for the secret story image! Found keywords: ' . implode(', ', $uniqueKeywords);
                         $currentQuestion = 3; // Move to Question 3
                     } else {
+                        // Calculate partial marks
+                        $partialScore = 0;
+                        if (count($uniqueKeywords) >= 1) $partialScore += 2;
+                        if ($hasQuestionPattern) $partialScore += 2;
+                        if (strlen(trim($prompt)) > 10) $partialScore += 1;
+                        $marks = min($partialScore, 5);
+
                         $suggestions = [];
                         if (count($uniqueKeywords) < 2) {
                             $missing = array_diff($requiredKeywords, $foundKeywords);
@@ -86,6 +96,7 @@ class DesignController extends Controller
                     Log::error('Unexpected error: ' . $e->getMessage());
                     $resultMessage = 'An error occurred while analyzing your prompt. Please try again.';
                     $isCorrect = false;
+                    $marks = 0;
                     $currentQuestion = 2;
                 }
             } elseif ($question == 3) {
@@ -112,9 +123,16 @@ class DesignController extends Controller
                     $isCorrect = count($foundTransformations) >= 2; // Require at least 2 correct transformations
 
                     if ($isCorrect) {
+                        $marks = 6;
                         $resultMessage = 'Correct! Your prompt accurately describes the changes needed! Found transformations: ' . implode(', ', $foundTransformations);
-                        $currentQuestion = 3; // Stay on Question 3 or redirect to results
+                        $currentQuestion = 4;
                     } else {
+                        // Calculate partial marks
+                        $partialScore = 0;
+                        if (count($foundTransformations) >= 1) $partialScore += 3;
+                        if (strlen(trim($prompt)) > 20) $partialScore += 2;
+                        $marks = min($partialScore, 5);
+
                         $missing = array_diff($requiredTransformations, $foundTransformations);
                         $resultMessage = 'Your prompt needs improvement. Try to include more transformations like: ' . implode(', ', array_slice($missing, 0, 2)) . '. Found transformations: ' . (empty($foundTransformations) ? 'none' : implode(', ', $foundTransformations));
                         $currentQuestion = 3;
@@ -123,6 +141,7 @@ class DesignController extends Controller
                     Log::error('Unexpected error: ' . $e->getMessage());
                     $resultMessage = 'An error occurred while analyzing your prompt. Please try again.';
                     $isCorrect = false;
+                    $marks = 0;
                     $currentQuestion = 3;
                 }
             } elseif ($question == 4) {
@@ -161,9 +180,16 @@ class DesignController extends Controller
                     $isCorrect = count($foundTransformations) >= 2;
 
                     if ($isCorrect) {
+                        $marks = 6;
                         $resultMessage = 'Correct! Your prompt accurately describes the changes needed! Found transformations: ' . implode(', ', $foundTransformations);
                         $currentQuestion = 5;
                     } else {
+                        // Calculate partial marks
+                        $partialScore = 0;
+                        if (count($foundTransformations) >= 1) $partialScore += 3;
+                        if (strlen(trim($prompt)) > 20) $partialScore += 2;
+                        $marks = min($partialScore, 5);
+
                         $missing = array_diff($requiredTransformations, $foundTransformations);
                         $resultMessage = 'Your prompt needs improvement. Try to include more transformations like: ' . implode(', ', array_slice($missing, 0, 2)) . '. Found transformations: ' . (empty($foundTransformations) ? 'none' : implode(', ', $foundTransformations));
                         $currentQuestion = 4;
@@ -172,6 +198,7 @@ class DesignController extends Controller
                     Log::error('Unexpected error: ' . $e->getMessage());
                     $resultMessage = 'An error occurred while analyzing your prompt. Please try again.';
                     $isCorrect = false;
+                    $marks = 0;
                     $currentQuestion = 4;
                 }
             } elseif ($question == 5) {
@@ -210,9 +237,16 @@ class DesignController extends Controller
                     $isCorrect = count($foundTransformations) >= 2;
 
                     if ($isCorrect) {
+                        $marks = 6;
                         $resultMessage = 'Correct! Your prompt accurately describes the changes needed! Found transformations: ' . implode(', ', $foundTransformations);
                         $currentQuestion = 6;
                     } else {
+                        // Calculate partial marks
+                        $partialScore = 0;
+                        if (count($foundTransformations) >= 1) $partialScore += 3;
+                        if (strlen(trim($prompt)) > 20) $partialScore += 2;
+                        $marks = min($partialScore, 5);
+
                         $missing = array_diff($requiredTransformations, $foundTransformations);
                         $resultMessage = 'Your prompt needs improvement. Try to include more transformations like: ' . implode(', ', array_slice($missing, 0, 2)) . '. Found transformations: ' . (empty($foundTransformations) ? 'none' : implode(', ', $foundTransformations));
                         $currentQuestion = 5;
@@ -221,6 +255,7 @@ class DesignController extends Controller
                     Log::error('Unexpected error: ' . $e->getMessage());
                     $resultMessage = 'An error occurred while analyzing your prompt. Please try again.';
                     $isCorrect = false;
+                    $marks = 0;
                     $currentQuestion = 5;
                 }
             } elseif ($question == 6) {
@@ -259,9 +294,16 @@ class DesignController extends Controller
                     $isCorrect = count($foundTransformations) >= 2;
 
                     if ($isCorrect) {
+                        $marks = 6;
                         $resultMessage = 'Correct! Your prompt accurately describes the changes needed! Found transformations: ' . implode(', ', $foundTransformations);
                         $currentQuestion = 7;
                     } else {
+                        // Calculate partial marks
+                        $partialScore = 0;
+                        if (count($foundTransformations) >= 1) $partialScore += 3;
+                        if (strlen(trim($prompt)) > 20) $partialScore += 2;
+                        $marks = min($partialScore, 5);
+
                         $missing = array_diff($requiredTransformations, $foundTransformations);
                         $resultMessage = 'Your prompt needs improvement. Try to include more transformations like: ' . implode(', ', array_slice($missing, 0, 2)) . '. Found transformations: ' . (empty($foundTransformations) ? 'none' : implode(', ', $foundTransformations));
                         $currentQuestion = 6;
@@ -270,6 +312,7 @@ class DesignController extends Controller
                     Log::error('Unexpected error: ' . $e->getMessage());
                     $resultMessage = 'An error occurred while analyzing your prompt. Please try again.';
                     $isCorrect = false;
+                    $marks = 0;
                     $currentQuestion = 6;
                 }
             } elseif ($question == 7) {
@@ -308,9 +351,16 @@ class DesignController extends Controller
                     $isCorrect = count($foundTransformations) >= 2;
 
                     if ($isCorrect) {
+                        $marks = 6;
                         $resultMessage = 'Correct! Your prompt accurately describes the changes needed! Found transformations: ' . implode(', ', $foundTransformations);
                         $currentQuestion = 8;
                     } else {
+                        // Calculate partial marks
+                        $partialScore = 0;
+                        if (count($foundTransformations) >= 1) $partialScore += 3;
+                        if (strlen(trim($prompt)) > 20) $partialScore += 2;
+                        $marks = min($partialScore, 5);
+
                         $missing = array_diff($requiredTransformations, $foundTransformations);
                         $resultMessage = 'Your prompt needs improvement. Try to include more transformations like: ' . implode(', ', array_slice($missing, 0, 2)) . '. Found transformations: ' . (empty($foundTransformations) ? 'none' : implode(', ', $foundTransformations));
                         $currentQuestion = 7;
@@ -319,6 +369,7 @@ class DesignController extends Controller
                     Log::error('Unexpected error: ' . $e->getMessage());
                     $resultMessage = 'An error occurred while analyzing your prompt. Please try again.';
                     $isCorrect = false;
+                    $marks = 0;
                     $currentQuestion = 7;
                 }
             } elseif ($question == 8) {
@@ -357,10 +408,17 @@ class DesignController extends Controller
                     $isCorrect = count($foundTransformations) >= 2;
 
                     if ($isCorrect) {
+                        $marks = 6;
                         $resultMessage = 'Correct! Your prompt accurately describes the changes needed! Found transformations: ' . implode(', ', $foundTransformations);
                         // Stay on 8 or redirect to results
                         $currentQuestion = 8;
                     } else {
+                        // Calculate partial marks
+                        $partialScore = 0;
+                        if (count($foundTransformations) >= 1) $partialScore += 3;
+                        if (strlen(trim($prompt)) > 20) $partialScore += 2;
+                        $marks = min($partialScore, 5);
+
                         $missing = array_diff($requiredTransformations, $foundTransformations);
                         $resultMessage = 'Your prompt needs improvement. Try to include more transformations like: ' . implode(', ', array_slice($missing, 0, 2)) . '. Found transformations: ' . (empty($foundTransformations) ? 'none' : implode(', ', $foundTransformations));
                         $currentQuestion = 8;
@@ -369,6 +427,7 @@ class DesignController extends Controller
                     Log::error('Unexpected error: ' . $e->getMessage());
                     $resultMessage = 'An error occurred while analyzing your prompt. Please try again.';
                     $isCorrect = false;
+                    $marks = 0;
                     $currentQuestion = 8;
                 }
             } elseif ($question == 9) {
@@ -404,9 +463,16 @@ class DesignController extends Controller
 
                     $isCorrect = count($foundTransformations) >= 2;
                     if ($isCorrect) {
+                        $marks = 6;
                         $resultMessage = 'Correct! Your prompt accurately describes the changes needed! Found transformations: ' . implode(', ', $foundTransformations);
                         $currentQuestion = 10;
                     } else {
+                        // Calculate partial marks
+                        $partialScore = 0;
+                        if (count($foundTransformations) >= 1) $partialScore += 3;
+                        if (strlen(trim($prompt)) > 20) $partialScore += 2;
+                        $marks = min($partialScore, 5);
+
                         $missing = array_diff($requiredTransformations, $foundTransformations);
                         $resultMessage = 'Your prompt needs improvement. Try to include more transformations like: ' . implode(', ', array_slice($missing, 0, 2)) . '. Found transformations: ' . (empty($foundTransformations) ? 'none' : implode(', ', $foundTransformations));
                         $currentQuestion = 9;
@@ -415,6 +481,7 @@ class DesignController extends Controller
                     Log::error('Unexpected error: ' . $e->getMessage());
                     $resultMessage = 'An error occurred while analyzing your prompt. Please try again.';
                     $isCorrect = false;
+                    $marks = 0;
                     $currentQuestion = 9;
                 }
             } elseif ($question == 10) {
@@ -450,9 +517,16 @@ class DesignController extends Controller
 
                     $isCorrect = count($foundTransformations) >= 2;
                     if ($isCorrect) {
+                        $marks = 6;
                         $resultMessage = 'Correct! Your prompt accurately describes the changes needed! Found transformations: ' . implode(', ', $foundTransformations);
                         $currentQuestion = 10; // stays at 10 or moves depending on your flow
                     } else {
+                        // Calculate partial marks
+                        $partialScore = 0;
+                        if (count($foundTransformations) >= 1) $partialScore += 3;
+                        if (strlen(trim($prompt)) > 20) $partialScore += 2;
+                        $marks = min($partialScore, 5);
+
                         $missing = array_diff($requiredTransformations, $foundTransformations);
                         $resultMessage = 'Your prompt needs improvement. Try to include more transformations like: ' . implode(', ', array_slice($missing, 0, 2)) . '. Found transformations: ' . (empty($foundTransformations) ? 'none' : implode(', ', $foundTransformations));
                         $currentQuestion = 10;
@@ -461,6 +535,7 @@ class DesignController extends Controller
                     Log::error('Unexpected error: ' . $e->getMessage());
                     $resultMessage = 'An error occurred while analyzing your prompt. Please try again.';
                     $isCorrect = false;
+                    $marks = 0;
                     $currentQuestion = 10;
                 }
             }
@@ -469,19 +544,31 @@ class DesignController extends Controller
         // Store current question in session
         session()->put('current_question', $currentQuestion);
 
+        // Check if this is an AJAX request and return JSON response
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'isCorrect' => $isCorrect,
+                'marks' => $marks,
+                'message' => $resultMessage,
+                'question' => $question,
+                'currentQuestion' => $currentQuestion
+            ]);
+        }
+
         return view('design.design-tools', [
             'showPopup' => $action === 'submit',
             'isCorrect' => $isCorrect,
             'resultMessage' => $resultMessage,
             'currentQuestion' => $currentQuestion,
             'prompt' => $prompt,
+            'marks' => $marks,
         ]);
     }
 
     public function results()
     {
-        // Reset session or clear specific data if needed
         session()->forget('current_question');
-        return view('design-results'); // Create this view for results
+        return view('design-results');
     }
 }

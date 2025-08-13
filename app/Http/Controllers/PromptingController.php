@@ -169,6 +169,7 @@ class PromptingController extends Controller
 
         // Check if this is an AJAX request
         if ($request->ajax() || $request->wantsJson()) {
+            Log::info('Returning AJAX response with marks: ' . $marks); // Debug log
             return response()->json([
                 'success' => true,
                 'isCorrect' => $isCorrect,
