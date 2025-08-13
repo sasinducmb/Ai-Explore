@@ -35,7 +35,7 @@ class AuthController extends Controller
             if ($user->role === 'ADMIN') {
                 return redirect()->route('admin.dashboard');
             } elseif ($user->role === 'PARENT') {
-                return redirect()->route('parent.dashboard');
+                return redirect()->route('home');
             } else {
                 Auth::logout();
                 return redirect()->route('login.form')->withErrors(['email' => 'Role not authorized.']);
