@@ -47,8 +47,6 @@
             ];
             @endphp
 
-
-            <!-- First Card -->
             @foreach ($aiTools as $index => $tool)
             @if ($index < 2)
             <a href="{{ $tool['id'] === 1 ? route('prompting.show') : route('design.tools') }}"
@@ -69,8 +67,7 @@
             @endif
             @endforeach
 
-            <!-- Third Card - Full Width -->
-            <a href="{{ $aiTools[2]['id'] === 3 ? '#' : '' }}" class="block md:col-span-2 hover:cursor-pointer">
+            <a href="{{ route('funny-activities') }}" class="block md:col-span-2 hover:cursor-pointer">
                 <div class="flex flex-col items-center text-center bg-white shadow-md shadow-blue-100 rounded-xl px-6 py-6 hover:shadow-lg hover:shadow-blue-200 transition border border-blue-200 transition-all duration-300 ease-in-out">
                     <img src="{{ $aiTools[2]['img'] }}" alt="{{ $aiTools[2]['alt'] }}"
                          class="w-16 h-16 mb-4 transition-all duration-300 ease-in-out object-contain"/>

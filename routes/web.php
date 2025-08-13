@@ -53,6 +53,7 @@ Route::middleware(['auth'])->group(function () {
     // Static Pages
     Route::view('/learn-ai-tools', 'learn-ai-tools')->name('learn-ai-tools');
     Route::view('/explore-ai-tools', 'explore-ai-tools')->name('explore-ai-tools');
+    Route::view('/funny-activities', 'funny-activities.funny-activities')->name('funny-activities');
     Route::view('/meet-your-ai-buddy', 'index')->name('meet-your-ai-buddy');
     Route::view('/chat-with-ai', 'index')->name('chat-with-ai');
 
