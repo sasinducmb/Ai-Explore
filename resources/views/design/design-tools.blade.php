@@ -118,14 +118,11 @@
                 </h2>
                 <p
                     class="text-gray-600 font-medium poppins max-w-3xl mx-auto mb-10 text-base sm:text-lg leading-relaxed animate-fade-in-delay">
-                    Kids will see two images: Image A (original) and Image B (target). The second image looks similar to the
-                    first but has a few changes. Your task is to figure out what’s different and create a prompt that would
-                    transform Image A into Image B.
+                    Kids receive a few words related to a secret story image. They must use those words to prompt an AI
+                    image generator and create an image that matches the hidden story.
                 </p>
                 <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
-                    <img src="{{ asset('asset/img/image_a.jpeg') }}" alt="Image A"
-                        class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
-                    <img src="{{ asset('asset/img/image_b.jpeg') }}" alt="Image B"
+                    <img src="{{ asset('asset/img/image_a7.jpeg') }}" alt="Image A"
                         class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
                 </div>
                 <div
@@ -136,16 +133,16 @@
                     <ul class="list-disc pl-6 text-gray-700 text-base sm:text-lg space-y-4">
                         <li class="flex items-center">
                             <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
-                            <span>Carefully look at Image A and Image B.</span>
+                            <span>Read Your Clues.(3–5 secret words that relate to a hidden story
+                                image)</span>
                         </li>
                         <li class="flex items-center">
                             <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
-                            <span>Find the differences – what new things are added, removed, or changed?</span>
+                            <span>Think About the Scene Write an AI Prompt</span>
                         </li>
                         <li class="flex items-center">
                             <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
-                            <span>Type a prompt below using clear and simple words (e.g.“remove the tree,” “make the sky
-                                sunny”).</span>
+                            <span>Write an AI Prompt</span>
                         </li>
                     </ul>
                 </div>
@@ -353,11 +350,14 @@
                 </h2>
                 <p
                     class="text-gray-600 font-medium poppins max-w-3xl mx-auto mb-10 text-base sm:text-lg leading-relaxed animate-fade-in-delay">
-                    Kids receive a few words related to a secret story image. They must use those words to prompt an AI
-                    image generator and create an image that matches the hidden story.
+                    Kids will see two images: Image A (original) and Image B (target). The second image looks similar to the
+                    first but has a few changes. Your task is to figure out what's different and create a prompt that would
+                    transform Image A into Image B.
                 </p>
                 <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
-                    <img src="{{ asset('asset/img/image_a7.jpeg') }}" alt="Image A"
+                    <img src="{{ asset('asset/img/image_a.jpeg') }}" alt="Image A"
+                        class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                    <img src="{{ asset('asset/img/image_b.jpeg') }}" alt="Image B"
                         class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
                 </div>
                 <div
@@ -368,16 +368,16 @@
                     <ul class="list-disc pl-6 text-gray-700 text-base sm:text-lg space-y-4">
                         <li class="flex items-center">
                             <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
-                            <span>Read Your Clues.(3–5 secret words that relate to a hidden story
-                                image)</span>
+                            <span>Carefully look at Image A and Image B.</span>
                         </li>
                         <li class="flex items-center">
                             <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
-                            <span>Think About the Scene Write an AI Prompt</span>
+                            <span>Find the differences – what new things are added, removed, or changed?</span>
                         </li>
                         <li class="flex items-center">
                             <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
-                            <span>Write an AI Prompt</span>
+                            <span>Type a prompt below using clear and simple words (e.g."remove the tree," "make the sky
+                                sunny").</span>
                         </li>
                     </ul>
                 </div>

@@ -100,7 +100,6 @@ class DesignController extends Controller
                     $currentQuestion = 2;
                 }
             } elseif ($question == 3) {
-                // Question 3: AI Image Transformation Challenge
                 $request->validate([
                     'prompt' => 'required|string|max:500',
                 ], [
@@ -111,30 +110,48 @@ class DesignController extends Controller
 
                 try {
                     $promptLower = strtolower($prompt);
-                    // Example required transformations (modify based on actual Image A and Image B differences)
-                    $requiredTransformations = ['add a red hat', 'remove the tree', 'make the sky sunny'];
-                    $foundTransformations = [];
-                    foreach ($requiredTransformations as $transformation) {
-                        if (strpos($promptLower, $transformation) !== false) {
-                            $foundTransformations[] = $transformation;
+                    $requiredKeywords = ['camping', 'family', 'fire', 'tent', 'outdoor', 'nature', 'campfire', 'roasting', 'marshmallow', 'adventure', 'forest', 'night', 'evening', 'woods', 'vacation'];
+                    $foundKeywords = [];
+                    foreach ($requiredKeywords as $keyword) {
+                        if (strpos($promptLower, $keyword) !== false) {
+                            $foundKeywords[] = $keyword;
                         }
                     }
 
-                    $isCorrect = count($foundTransformations) >= 2; // Require at least 2 correct transformations
+                    $hasQuestionPattern = (
+                        strpos($promptLower, 'create') !== false ||
+                        strpos($promptLower, 'generate') !== false ||
+                        strpos($promptLower, 'draw') !== false ||
+                        strpos($promptLower, 'image') !== false ||
+                        strpos($promptLower, 'make') !== false ||
+                        strpos($promptLower, 'show') !== false ||
+                        strpos($promptLower, 'design') !== false
+                    );
+
+                    $uniqueKeywords = array_unique($foundKeywords);
+                    $isCorrect = count($uniqueKeywords) >= 2 && $hasQuestionPattern;
 
                     if ($isCorrect) {
                         $marks = 6;
-                        $resultMessage = 'Correct! Your prompt accurately describes the changes needed! Found transformations: ' . implode(', ', $foundTransformations);
+                        $resultMessage = 'Correct! Your prompt is well-suited for the camping scene! Found keywords: ' . implode(', ', $uniqueKeywords);
                         $currentQuestion = 4;
                     } else {
                         // Calculate partial marks
                         $partialScore = 0;
-                        if (count($foundTransformations) >= 1) $partialScore += 3;
-                        if (strlen(trim($prompt)) > 20) $partialScore += 2;
+                        if (count($uniqueKeywords) >= 1) $partialScore += 2;
+                        if ($hasQuestionPattern) $partialScore += 2;
+                        if (strlen(trim($prompt)) > 10) $partialScore += 1;
                         $marks = min($partialScore, 5);
 
-                        $missing = array_diff($requiredTransformations, $foundTransformations);
-                        $resultMessage = 'Your prompt needs improvement. Try to include more transformations like: ' . implode(', ', array_slice($missing, 0, 2)) . '. Found transformations: ' . (empty($foundTransformations) ? 'none' : implode(', ', $foundTransformations));
+                        $suggestions = [];
+                        if (count($uniqueKeywords) < 2) {
+                            $missing = array_diff($requiredKeywords, $foundKeywords);
+                            $suggestions[] = 'include more keywords like ' . implode(', ', array_slice($missing, 0, 3));
+                        }
+                        if (!$hasQuestionPattern) {
+                            $suggestions[] = 'use action words like create, generate, draw, make, or image';
+                        }
+                        $resultMessage = 'Your prompt needs improvement. Try to: ' . implode(' and ', $suggestions) . '. Found keywords: ' . (empty($uniqueKeywords) ? 'none' : implode(', ', $uniqueKeywords));
                         $currentQuestion = 3;
                     }
                 } catch (\Exception $e) {
@@ -155,43 +172,48 @@ class DesignController extends Controller
 
                 try {
                     $promptLower = strtolower($prompt);
-
-                    // Updated required transformations for the camping image
-                    $requiredTransformations = [
-                        'add a red hat to the boy roasting marshmallows',
-                        'change the campfire to a barbecue grill',
-                        'replace the tent with a small cabin',
-                        'make the scene during daytime with a sunny sky',
-                        'remove one of the trees in the background',
-                        'add a dog sitting near the fire',
-                        'change the girl’s sweater to yellow',
-                        'add marshmallows to the woman’s stick',
-                        'replace the logs with camping chairs',
-                        'add a lantern hanging near the tent'
-                    ];
-
-                    $foundTransformations = [];
-                    foreach ($requiredTransformations as $transformation) {
-                        if (strpos($promptLower, strtolower($transformation)) !== false) {
-                            $foundTransformations[] = $transformation;
+                    $requiredKeywords = ['family', 'game', 'table', 'living', 'board', 'play', 'together', 'fun', 'activity', 'entertainment', 'room', 'indoor', 'children', 'parents', 'home', 'leisure', 'bonding'];
+                    $foundKeywords = [];
+                    foreach ($requiredKeywords as $keyword) {
+                        if (strpos($promptLower, $keyword) !== false) {
+                            $foundKeywords[] = $keyword;
                         }
                     }
 
-                    $isCorrect = count($foundTransformations) >= 2;
+                    $hasQuestionPattern = (
+                        strpos($promptLower, 'create') !== false ||
+                        strpos($promptLower, 'generate') !== false ||
+                        strpos($promptLower, 'draw') !== false ||
+                        strpos($promptLower, 'image') !== false ||
+                        strpos($promptLower, 'make') !== false ||
+                        strpos($promptLower, 'show') !== false ||
+                        strpos($promptLower, 'design') !== false
+                    );
+
+                    $uniqueKeywords = array_unique($foundKeywords);
+                    $isCorrect = count($uniqueKeywords) >= 2 && $hasQuestionPattern;
 
                     if ($isCorrect) {
                         $marks = 6;
-                        $resultMessage = 'Correct! Your prompt accurately describes the changes needed! Found transformations: ' . implode(', ', $foundTransformations);
+                        $resultMessage = 'Correct! Your prompt is well-suited for the family game scene! Found keywords: ' . implode(', ', $uniqueKeywords);
                         $currentQuestion = 5;
                     } else {
                         // Calculate partial marks
                         $partialScore = 0;
-                        if (count($foundTransformations) >= 1) $partialScore += 3;
-                        if (strlen(trim($prompt)) > 20) $partialScore += 2;
+                        if (count($uniqueKeywords) >= 1) $partialScore += 2;
+                        if ($hasQuestionPattern) $partialScore += 2;
+                        if (strlen(trim($prompt)) > 10) $partialScore += 1;
                         $marks = min($partialScore, 5);
 
-                        $missing = array_diff($requiredTransformations, $foundTransformations);
-                        $resultMessage = 'Your prompt needs improvement. Try to include more transformations like: ' . implode(', ', array_slice($missing, 0, 2)) . '. Found transformations: ' . (empty($foundTransformations) ? 'none' : implode(', ', $foundTransformations));
+                        $suggestions = [];
+                        if (count($uniqueKeywords) < 2) {
+                            $missing = array_diff($requiredKeywords, $foundKeywords);
+                            $suggestions[] = 'include more keywords like ' . implode(', ', array_slice($missing, 0, 3));
+                        }
+                        if (!$hasQuestionPattern) {
+                            $suggestions[] = 'use action words like create, generate, draw, make, or image';
+                        }
+                        $resultMessage = 'Your prompt needs improvement. Try to: ' . implode(' and ', $suggestions) . '. Found keywords: ' . (empty($uniqueKeywords) ? 'none' : implode(', ', $uniqueKeywords));
                         $currentQuestion = 4;
                     }
                 } catch (\Exception $e) {
@@ -212,43 +234,48 @@ class DesignController extends Controller
 
                 try {
                     $promptLower = strtolower($prompt);
-
-                    // Updated required transformations for the board game image
-                    $requiredTransformations = [
-                        'add sunglasses to the boy',
-                        'change the teddy bear to a robot',
-                        'replace the yellow car with a bicycle',
-                        'add a hat to the woman',
-                        'change the board game to a chessboard',
-                        'remove the mug from the table',
-                        'add a cat sitting on the table',
-                        'change the red truck to a green bus',
-                        'add balloons in the background',
-                        'replace the bookshelf with a window view'
-                    ];
-
-                    $foundTransformations = [];
-                    foreach ($requiredTransformations as $transformation) {
-                        if (strpos($promptLower, strtolower($transformation)) !== false) {
-                            $foundTransformations[] = $transformation;
+                    $requiredKeywords = ['helping', 'elderly', 'stairs', 'kindness', 'assistance', 'support', 'care', 'old', 'senior', 'aid', 'compassion', 'respect', 'gentle', 'walking', 'climbing', 'steps', 'guidance', 'service'];
+                    $foundKeywords = [];
+                    foreach ($requiredKeywords as $keyword) {
+                        if (strpos($promptLower, $keyword) !== false) {
+                            $foundKeywords[] = $keyword;
                         }
                     }
 
-                    $isCorrect = count($foundTransformations) >= 2;
+                    $hasQuestionPattern = (
+                        strpos($promptLower, 'create') !== false ||
+                        strpos($promptLower, 'generate') !== false ||
+                        strpos($promptLower, 'draw') !== false ||
+                        strpos($promptLower, 'image') !== false ||
+                        strpos($promptLower, 'make') !== false ||
+                        strpos($promptLower, 'show') !== false ||
+                        strpos($promptLower, 'design') !== false
+                    );
+
+                    $uniqueKeywords = array_unique($foundKeywords);
+                    $isCorrect = count($uniqueKeywords) >= 2 && $hasQuestionPattern;
 
                     if ($isCorrect) {
                         $marks = 6;
-                        $resultMessage = 'Correct! Your prompt accurately describes the changes needed! Found transformations: ' . implode(', ', $foundTransformations);
+                        $resultMessage = 'Correct! Your prompt is well-suited for the helping scene! Found keywords: ' . implode(', ', $uniqueKeywords);
                         $currentQuestion = 6;
                     } else {
                         // Calculate partial marks
                         $partialScore = 0;
-                        if (count($foundTransformations) >= 1) $partialScore += 3;
-                        if (strlen(trim($prompt)) > 20) $partialScore += 2;
+                        if (count($uniqueKeywords) >= 1) $partialScore += 2;
+                        if ($hasQuestionPattern) $partialScore += 2;
+                        if (strlen(trim($prompt)) > 10) $partialScore += 1;
                         $marks = min($partialScore, 5);
 
-                        $missing = array_diff($requiredTransformations, $foundTransformations);
-                        $resultMessage = 'Your prompt needs improvement. Try to include more transformations like: ' . implode(', ', array_slice($missing, 0, 2)) . '. Found transformations: ' . (empty($foundTransformations) ? 'none' : implode(', ', $foundTransformations));
+                        $suggestions = [];
+                        if (count($uniqueKeywords) < 2) {
+                            $missing = array_diff($requiredKeywords, $foundKeywords);
+                            $suggestions[] = 'include more keywords like ' . implode(', ', array_slice($missing, 0, 3));
+                        }
+                        if (!$hasQuestionPattern) {
+                            $suggestions[] = 'use action words like create, generate, draw, make, or image';
+                        }
+                        $resultMessage = 'Your prompt needs improvement. Try to: ' . implode(' and ', $suggestions) . '. Found keywords: ' . (empty($uniqueKeywords) ? 'none' : implode(', ', $uniqueKeywords));
                         $currentQuestion = 5;
                     }
                 } catch (\Exception $e) {
@@ -269,43 +296,48 @@ class DesignController extends Controller
 
                 try {
                     $promptLower = strtolower($prompt);
-
-                    // Updated required transformations for the man helping elderly woman image
-                    $requiredTransformations = [
-                        'add a walking stick to the man',
-                        'change the bag color to red',
-                        'replace the stairs with a ramp',
-                        'add a cat walking beside them',
-                        'change the woman’s dress to blue',
-                        'add flowers along the side of the stairs',
-                        'replace the man’s shoes with sandals',
-                        'add a backpack to the man',
-                        'make the background a park scene',
-                        'add a sun in the sky'
-                    ];
-
-                    $foundTransformations = [];
-                    foreach ($requiredTransformations as $transformation) {
-                        if (strpos($promptLower, strtolower($transformation)) !== false) {
-                            $foundTransformations[] = $transformation;
+                    $requiredKeywords = ['beach', 'family', 'summer', 'vacation', 'ocean', 'sea', 'sand', 'sun', 'holiday', 'relaxing', 'swimming', 'waves', 'coast', 'tropical', 'sunny', 'water', 'seaside', 'trip', 'enjoy'];
+                    $foundKeywords = [];
+                    foreach ($requiredKeywords as $keyword) {
+                        if (strpos($promptLower, $keyword) !== false) {
+                            $foundKeywords[] = $keyword;
                         }
                     }
 
-                    $isCorrect = count($foundTransformations) >= 2;
+                    $hasQuestionPattern = (
+                        strpos($promptLower, 'create') !== false ||
+                        strpos($promptLower, 'generate') !== false ||
+                        strpos($promptLower, 'draw') !== false ||
+                        strpos($promptLower, 'image') !== false ||
+                        strpos($promptLower, 'make') !== false ||
+                        strpos($promptLower, 'show') !== false ||
+                        strpos($promptLower, 'design') !== false
+                    );
+
+                    $uniqueKeywords = array_unique($foundKeywords);
+                    $isCorrect = count($uniqueKeywords) >= 2 && $hasQuestionPattern;
 
                     if ($isCorrect) {
                         $marks = 6;
-                        $resultMessage = 'Correct! Your prompt accurately describes the changes needed! Found transformations: ' . implode(', ', $foundTransformations);
+                        $resultMessage = 'Correct! Your prompt is well-suited for the beach family scene! Found keywords: ' . implode(', ', $uniqueKeywords);
                         $currentQuestion = 7;
                     } else {
                         // Calculate partial marks
                         $partialScore = 0;
-                        if (count($foundTransformations) >= 1) $partialScore += 3;
-                        if (strlen(trim($prompt)) > 20) $partialScore += 2;
+                        if (count($uniqueKeywords) >= 1) $partialScore += 2;
+                        if ($hasQuestionPattern) $partialScore += 2;
+                        if (strlen(trim($prompt)) > 10) $partialScore += 1;
                         $marks = min($partialScore, 5);
 
-                        $missing = array_diff($requiredTransformations, $foundTransformations);
-                        $resultMessage = 'Your prompt needs improvement. Try to include more transformations like: ' . implode(', ', array_slice($missing, 0, 2)) . '. Found transformations: ' . (empty($foundTransformations) ? 'none' : implode(', ', $foundTransformations));
+                        $suggestions = [];
+                        if (count($uniqueKeywords) < 2) {
+                            $missing = array_diff($requiredKeywords, $foundKeywords);
+                            $suggestions[] = 'include more keywords like ' . implode(', ', array_slice($missing, 0, 3));
+                        }
+                        if (!$hasQuestionPattern) {
+                            $suggestions[] = 'use action words like create, generate, draw, make, or image';
+                        }
+                        $resultMessage = 'Your prompt needs improvement. Try to: ' . implode(' and ', $suggestions) . '. Found keywords: ' . (empty($uniqueKeywords) ? 'none' : implode(', ', $uniqueKeywords));
                         $currentQuestion = 6;
                     }
                 } catch (\Exception $e) {
@@ -326,29 +358,16 @@ class DesignController extends Controller
 
                 try {
                     $promptLower = strtolower($prompt);
-
-                    // Updated required transformations for the family at the beach image
-                    $requiredTransformations = [
-                        'add a beach ball near the family',
-                        'change the father’s shirt to red',
-                        'replace the sea with a swimming pool',
-                        'add sunglasses to the mother',
-                        'change the child’s shorts to blue',
-                        'add a sandcastle in the background',
-                        'replace the clouds with a clear sky',
-                        'add a surfboard leaning on the sand',
-                        'make the waves bigger',
-                        'add a dolphin jumping in the background'
-                    ];
-
+                    // Example required transformations (modify based on actual Image A and Image B differences)
+                    $requiredTransformations = ['add a red hat', 'remove the tree', 'make the sky sunny'];
                     $foundTransformations = [];
                     foreach ($requiredTransformations as $transformation) {
-                        if (strpos($promptLower, strtolower($transformation)) !== false) {
+                        if (strpos($promptLower, $transformation) !== false) {
                             $foundTransformations[] = $transformation;
                         }
                     }
 
-                    $isCorrect = count($foundTransformations) >= 2;
+                    $isCorrect = count($foundTransformations) >= 2; // Require at least 2 correct transformations
 
                     if ($isCorrect) {
                         $marks = 6;
