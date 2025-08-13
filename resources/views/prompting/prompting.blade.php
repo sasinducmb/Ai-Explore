@@ -37,6 +37,7 @@
                 <form id="all-answers-form" action="{{ route('prompting.submit') }}" method="POST">
                     @csrf
                     <input type="hidden" name="action" value="finish">
+
                     <!-- Question 1: MCQ -->
                     <div id="question-1" class="{{ isset($currentQuestion) && $currentQuestion != 1 ? 'hidden' : '' }}">
                         <h4 class="font-semibold text-base sm:text-lg text-gray-800 mb-4 text-left">🧠 Question 1: What is
@@ -59,7 +60,7 @@
                             <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
                             @enderror
                         </div>
-                        <div class="flex space-x-4 justify-end">
+                        <div class="flex space-x-4 justify-end mt-6">
                             <button type="button" id="next-btn-1" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 text-sm sm:text-base" disabled>
                                 Next
                             </button>
@@ -91,7 +92,7 @@
                             <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
                             @enderror
                         </div>
-                        <div class="flex space-x-4 justify-between">
+                        <div class="flex space-x-4 justify-between mt-6">
                             <button type="button" id="prev-btn-2" class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition duration-300 text-sm sm:text-base">
                                 Prev
                             </button>
@@ -127,7 +128,7 @@
                             <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
                             @enderror
                         </div>
-                        <div class="flex space-x-4 justify-between">
+                        <div class="flex space-x-4 justify-between mt-6">
                             <button type="button" id="prev-btn-3" class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition duration-300 text-sm sm:text-base">
                                 Prev
                             </button>
@@ -171,7 +172,7 @@
                             <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
                             @enderror
                         </div>
-                        <div class="flex space-x-4 justify-between">
+                        <div class="flex space-x-4 justify-between mt-6">
                             <button type="button" id="prev-btn-4" class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition duration-300 text-sm sm:text-base">
                                 Prev
                             </button>
@@ -195,7 +196,7 @@
                                 <ul class="mt-2 space-y-2">
                                     <li>
                                         <span class="text-yellow-700">Role:</span> Chef<br>
-                                        <span class="text-green-600">Prompt:</span> “Teach me how to make a healthy fruit smoothie.”
+                                        <span class="text-green-600">Prompt:</span> "Teach me how to make a healthy fruit smoothie."
                                     </li>
                                 </ul>
                             </div>
@@ -207,7 +208,7 @@
                             <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
                             @enderror
                         </div>
-                        <div class="flex space-x-4 justify-between">
+                        <div class="flex space-x-4 justify-between mt-6">
                             <button type="button" id="prev-btn-5" class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition duration-300 text-sm sm:text-base">
                                 Prev
                             </button>
@@ -224,8 +225,8 @@
 
 <!-- Popup for result -->
 <div id="result-popup"
-     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center {{ isset($showPopup) && $showPopup ? '' : 'hidden' }}">
-    <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg text-center w-full max-w-md sm:max-w-lg">
+     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center {{ isset($showPopup) && $showPopup ? '' : 'hidden' }} z-50">
+    <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg text-center w-full max-w-md sm:max-w-lg transform transition-all duration-300">
         <div id="result-image" class="mb-4">
             <img id="popup-image" src="" alt="Result" class="w-64 h-64 mx-auto object-contain">
         </div>
@@ -238,8 +239,6 @@
         </button>
     </div>
 </div>
-
-
 
 @include('layout.footer')
 
@@ -345,8 +344,6 @@
 
         resultMessage.textContent = message;
         popup.classList.remove('hidden');
-
-        // Removed auto-close functionality - popup now only closes when user clicks the close button
     }
 
     // Function to submit individual question
@@ -528,50 +525,56 @@
             // Submit final question first
             submitQuestion(5, roleplayPromptInput.value, function(response) {
                 if (response && response.success) {
-                    // Now submit the completion form
-                    const formData = new FormData();
-                    formData.append('_token', '{{ csrf_token() }}');
-                    formData.append('action', 'finish');
+                    // Wait for user to close popup manually before proceeding
+                    const checkPopupClosed = setInterval(() => {
+                        if (popup.classList.contains('hidden')) {
+                            clearInterval(checkPopupClosed);
 
-                    fetch('{{ route("prompting.submit") }}', {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
+                            // Now submit the completion form
+                            const formData = new FormData();
+                            formData.append('_token', '{{ csrf_token() }}');
+                            formData.append('action', 'finish');
+
+                            fetch('{{ route("prompting.submit") }}', {
+                                method: 'POST',
+                                body: formData,
+                                headers: {
+                                    'X-Requested-With': 'XMLHttpRequest'
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success && data.redirect) {
+                                    window.location.href = data.redirect;
+                                } else {
+                                    window.location.href = '{{ route("prompting.results") }}';
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                window.location.href = '{{ route("prompting.results") }}';
+                            });
                         }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success && data.redirect) {
-                            window.location.href = data.redirect;
-                        } else {
-                            window.location.href = '{{ route("prompting.results") }}';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        window.location.href = '{{ route("prompting.results") }}';
-                    });
+                    }, 100);
                 } else {
                     console.error('Failed to save final question');
                     finishBtn.disabled = false;
                     finishBtn.textContent = 'Finish';
                 }
-            });On page load
-        }w.onload = function() {
-    });        if ({{ isset($showPopup) && $showPopup ? 'true' : 'false' }}) {
- popup.classList.remove('hidden');
-    // Handle popup close        }
+            });
+        }
+    });
 
+    // Handle popup close
+    closePopupBtn.addEventListener('click', function() {
+        popup.classList.add('hidden');
+    });
 
-
-
-
-
-
-
-
-@endsection</script>    });        });    });        popup.classList.add('hidden');    closePopupBtn.addEventListener('click', function() {
+    // On page load
+    window.onload = function() {
+        if ({{ isset($showPopup) && $showPopup ? 'true' : 'false' }}) {
+            popup.classList.remove('hidden');
+        }
         const currentQuestion = {{ isset($currentQuestion) ? $currentQuestion : 1 }};
         showQuestion(currentQuestion);
     };

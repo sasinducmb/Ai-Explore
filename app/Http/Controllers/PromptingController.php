@@ -132,7 +132,12 @@ class PromptingController extends Controller
             ]);
             $isCorrect = $request->input('answer') === 'Bard';
             $marks = $this->calculateMarks(1, $isCorrect);
-            $resultMessage = $isCorrect ? 'Correct! Great job!' : 'Answer saved. Moving to the next question.';
+
+            if ($isCorrect) {
+                $resultMessage = 'Excellent! Bard is indeed Google\'s AI prompting tool. You got it right!';
+            } else {
+                $resultMessage = 'Good try! The correct answer is Bard - Google\'s conversational AI assistant. You\'ll learn more as we continue!';
+            }
 
             $this->saveQuestionResult($sessionId, 1, $request->input('answer'), $isCorrect, $marks);
             Log::info('Question 1 Marks: ' . $marks . '/6');
@@ -145,25 +150,25 @@ class PromptingController extends Controller
             Log::info("Submitted prompt for Question {$question}: " . $request->input('answer'));
 
             if ($question == 2) {
-                // Create a new request object with the answer for processing
-                $processRequest = new Request(['answer' => $request->input('answer')]);
-                $analysisResult = $this->processQuestion2($processRequest);
+                // Weather prompt improvement
+                $analysisResult = $this->processWeatherPrompt($request);
+            } elseif ($question == 3) {
+                // Recipe prompt improvement
+                $analysisResult = $this->processRecipePrompt($request);
+            } elseif ($question == 4) {
+                // Computer prompt improvement
+                $analysisResult = $this->processComputerPrompt($request);
             } else {
-                // For questions 3-5, use similar logic but with simpler validation
-                $processRequest = new Request([
-                    'answer' => $request->input('answer'),
-                    'topic' => 'general' // Default topic for questions 3-5
-                ]);
-                $analysisResult = $this->processQuestion3($processRequest);
+                // Role-play prompt
+                $analysisResult = $this->processRolePlayPrompt($request);
             }
 
             $isCorrect = $analysisResult['isCorrect'];
             $marks = $this->calculateMarks($question, $isCorrect, $request->input('answer'));
             $analysis = $analysisResult['analysis'] ?? null;
+            $resultMessage = $this->generateFeedbackMessage($marks, $analysisResult['message']);
 
             $this->saveQuestionResult($sessionId, $question, $request->input('answer'), $isCorrect, $marks, $analysis);
-
-            $resultMessage = $isCorrect ? 'Correct! Your prompt is relevant and well-structured!' : 'Answer saved. Moving to the next question.';
             Log::info("Question {$question} Marks: {$marks}/6");
         }
 
@@ -694,5 +699,250 @@ class PromptingController extends Controller
              $this->languageClient->close(); // Uncomment if available
             // No try-catch needed since nothing is being executed that throws
         }
+    }
+
+    /**
+     * Generate feedback message based on marks
+     */
+    private function generateFeedbackMessage($marks, $baseMessage)
+    {
+        if ($marks == 6) {
+            return "🎉 Perfect! " . $baseMessage;
+        } elseif ($marks >= 4) {
+            return "👍 Great job! " . $baseMessage;
+        } elseif ($marks >= 2) {
+            return "🤔 Good effort! " . $baseMessage;
+        } else {
+            return "💡 Keep trying! " . $baseMessage;
+        }
+    }
+
+    /**
+     * Process weather prompt improvement
+     */
+    private function processWeatherPrompt($request)
+    {
+        $prompt = strtolower($request->input('answer'));
+
+        $hasLocation = (
+            strpos($prompt, 'london') !== false ||
+            strpos($prompt, 'tokyo') !== false ||
+            strpos($prompt, 'new york') !== false ||
+            strpos($prompt, 'paris') !== false ||
+            strpos($prompt, 'city') !== false ||
+            strpos($prompt, 'location') !== false ||
+            strpos($prompt, 'in') !== false
+        );
+
+        $hasTimeframe = (
+            strpos($prompt, 'today') !== false ||
+            strpos($prompt, 'tomorrow') !== false ||
+            strpos($prompt, 'week') !== false ||
+            strpos($prompt, 'monday') !== false ||
+            strpos($prompt, 'weekend') !== false ||
+            strpos($prompt, 'time') !== false
+        );
+
+        $hasSpecifics = (
+            strpos($prompt, 'temperature') !== false ||
+            strpos($prompt, 'rain') !== false ||
+            strpos($prompt, 'sunny') !== false ||
+            strpos($prompt, 'cloudy') !== false ||
+            strpos($prompt, 'condition') !== false
+        );
+
+        $isCorrect = $hasLocation && $hasTimeframe && $hasSpecifics;
+
+        if ($isCorrect) {
+            $message = "Your prompt is much more specific and useful! You included location, time, and weather details.";
+        } else {
+            $missing = [];
+            if (!$hasLocation) $missing[] = "a specific location";
+            if (!$hasTimeframe) $missing[] = "a time period";
+            if (!$hasSpecifics) $missing[] = "specific weather conditions";
+            $message = "Your prompt needs: " . implode(', ', $missing) . " to be more helpful.";
+        }
+
+        return [
+            'isCorrect' => $isCorrect,
+            'message' => $message,
+            'analysis' => compact('hasLocation', 'hasTimeframe', 'hasSpecifics')
+        ];
+    }
+
+    /**
+     * Process recipe prompt improvement
+     */
+    private function processRecipePrompt($request)
+    {
+        $prompt = strtolower($request->input('answer'));
+
+        $hasPastaType = (
+            strpos($prompt, 'spaghetti') !== false ||
+            strpos($prompt, 'penne') !== false ||
+            strpos($prompt, 'linguine') !== false ||
+            strpos($prompt, 'fettuccine') !== false ||
+            strpos($prompt, 'type') !== false
+        );
+
+        $hasDietary = (
+            strpos($prompt, 'vegetarian') !== false ||
+            strpos($prompt, 'vegan') !== false ||
+            strpos($prompt, 'gluten-free') !== false ||
+            strpos($prompt, 'healthy') !== false ||
+            strpos($prompt, 'diet') !== false
+        );
+
+        $hasServing = (
+            strpos($prompt, '2 people') !== false ||
+            strpos($prompt, '4 people') !== false ||
+            strpos($prompt, 'family') !== false ||
+            strpos($prompt, 'serving') !== false ||
+            strpos($prompt, 'portion') !== false
+        );
+
+        $hasSkillLevel = (
+            strpos($prompt, 'beginner') !== false ||
+            strpos($prompt, 'easy') !== false ||
+            strpos($prompt, 'simple') !== false ||
+            strpos($prompt, 'quick') !== false ||
+            strpos($prompt, 'minutes') !== false
+        );
+
+        $isCorrect = $hasPastaType && $hasDietary && $hasServing && $hasSkillLevel;
+
+        if ($isCorrect) {
+            $message = "Excellent! Your recipe prompt is detailed and specific - perfect for getting helpful cooking instructions!";
+        } else {
+            $missing = [];
+            if (!$hasPastaType) $missing[] = "pasta type";
+            if (!$hasDietary) $missing[] = "dietary requirements";
+            if (!$hasServing) $missing[] = "serving size";
+            if (!$hasSkillLevel) $missing[] = "skill level or time";
+            $message = "Your prompt could include: " . implode(', ', $missing) . " for better recipe results.";
+        }
+
+        return [
+            'isCorrect' => $isCorrect,
+            'message' => $message,
+            'analysis' => compact('hasPastaType', 'hasDietary', 'hasServing', 'hasSkillLevel')
+        ];
+    }
+
+    /**
+     * Process computer prompt improvement
+     */
+    private function processComputerPrompt($request)
+    {
+        $prompt = strtolower($request->input('answer'));
+
+        $hasSpecificAspect = (
+            strpos($prompt, 'memory') !== false ||
+            strpos($prompt, 'processor') !== false ||
+            strpos($prompt, 'cpu') !== false ||
+            strpos($prompt, 'storage') !== false ||
+            strpos($prompt, 'graphics') !== false ||
+            strpos($prompt, 'internet') !== false ||
+            strpos($prompt, 'game') !== false
+        );
+
+        $hasContext = (
+            strpos($prompt, 'when') !== false ||
+            strpos($prompt, 'example') !== false ||
+            strpos($prompt, 'real world') !== false ||
+            strpos($prompt, 'daily life') !== false ||
+            strpos($prompt, 'use') !== false
+        );
+
+        $hasEngagement = (
+            strpos($prompt, 'kid') !== false ||
+            strpos($prompt, 'child') !== false ||
+            strpos($prompt, 'simple') !== false ||
+            strpos($prompt, 'easy') !== false ||
+            strpos($prompt, 'explain like') !== false ||
+            strpos($prompt, 'fun') !== false
+        );
+
+        $hasDetails = (
+            strpos($prompt, 'step') !== false ||
+            strpos($prompt, 'how') !== false ||
+            strpos($prompt, 'why') !== false ||
+            strpos($prompt, 'what') !== false ||
+            strpos($prompt, 'compare') !== false
+        );
+
+        $isCorrect = $hasSpecificAspect && $hasContext && $hasEngagement && $hasDetails;
+
+        if ($isCorrect) {
+            $message = "Outstanding! Your advanced prompt is specific, engaging, and perfect for young learners!";
+        } else {
+            $missing = [];
+            if (!$hasSpecificAspect) $missing[] = "specific computer aspect";
+            if (!$hasContext) $missing[] = "real-world context";
+            if (!$hasEngagement) $missing[] = "age-appropriate language";
+            if (!$hasDetails) $missing[] = "detailed questions";
+            $message = "To improve your advanced prompt, add: " . implode(', ', $missing) . ".";
+        }
+
+        return [
+            'isCorrect' => $isCorrect,
+            'message' => $message,
+            'analysis' => compact('hasSpecificAspect', 'hasContext', 'hasEngagement', 'hasDetails')
+        ];
+    }
+
+    /**
+     * Process role-play prompt
+     */
+    private function processRolePlayPrompt($request)
+    {
+        $prompt = strtolower($request->input('answer'));
+
+        $hasRole = (
+            strpos($prompt, 'chef') !== false ||
+            strpos($prompt, 'teacher') !== false ||
+            strpos($prompt, 'scientist') !== false ||
+            strpos($prompt, 'doctor') !== false ||
+            strpos($prompt, 'artist') !== false ||
+            strpos($prompt, 'as a') !== false ||
+            strpos($prompt, 'you are') !== false
+        );
+
+        $hasRequest = (
+            strpos($prompt, 'teach') !== false ||
+            strpos($prompt, 'explain') !== false ||
+            strpos($prompt, 'show') !== false ||
+            strpos($prompt, 'help') !== false ||
+            strpos($prompt, 'tell') !== false ||
+            strpos($prompt, 'how') !== false
+        );
+
+        $hasSpecific = (
+            strpos($prompt, 'recipe') !== false ||
+            strpos($prompt, 'healthy') !== false ||
+            strpos($prompt, 'experiment') !== false ||
+            strpos($prompt, 'math') !== false ||
+            strpos($prompt, 'science') !== false ||
+            strpos($prompt, 'art') !== false ||
+            strpos($prompt, 'cooking') !== false
+        );
+
+        $isCorrect = $hasRole && $hasRequest && $hasSpecific;
+
+        if ($isCorrect) {
+            $message = "Perfect role-play prompt! You clearly defined the AI's role and made a specific request!";
+        } else {
+            $missing = [];
+            if (!$hasRole) $missing[] = "clear role definition";
+            if (!$hasRequest) $missing[] = "specific request";
+            if (!$hasSpecific) $missing[] = "detailed topic";
+            $message = "Your role-play prompt needs: " . implode(', ', $missing) . " to be more effective.";
+        }
+
+        return [
+            'isCorrect' => $isCorrect,
+            'message' => $message,
+            'analysis' => compact('hasRole', 'hasRequest', 'hasSpecific')
+        ];
     }
 }
