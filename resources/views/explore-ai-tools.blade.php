@@ -52,9 +52,7 @@
             <a href="{{ $tool['id'] === 1 ? route('prompting.show') : route('design.tools') }}"
                class="block {{ $tool['id'] === 1 ? 'hover:cursor-pointer' : 'hover:cursor-not-allowed' }}">
                 <div class="flex items-center bg-white shadow-md shadow-blue-100 rounded-xl px-6 py-6 hover:shadow-lg hover:shadow-blue-200 transition border border-blue-200 transition-all duration-300 ease-in-out h-36">
-                    <img src="{{ $tool['img'] }}" alt="{{ $tool['alt'] }}"
-                         class="w-12 h-12 mr-6 transition-all duration-300 ease-in-out object-contain"/>
-                    <div>
+                    <div class="mr-6">
                         <h3 class="font-semibold text-xl text-gray-800 transition-colors duration-300">
                             {{ $tool['title'] }}
                         </h3>
@@ -62,6 +60,8 @@
                             {{ $tool['desc'] }}
                         </p>
                     </div>
+                    <img src="{{ $tool['img'] }}" alt="{{ $tool['alt'] }}"
+                         class="w-12 h-12 transition-all duration-300 ease-in-out object-contain"/>
                 </div>
             </a>
             @endif
