@@ -21,20 +21,25 @@ class SessionController extends Controller
         if (Auth::check()) {
             $user = Auth::user();
 
-            // Skip for admin users - check both email and role
+            // Skip for admin users
             if ($user->email === 'admin@admin.com' ||
                 ($user->role ?? null) === 'ADMIN' ||
                 ($user->is_admin ?? false)) {
                 return response()->json(['success' => false, 'message' => 'Admin sessions do not expire']);
             }
 
-            // Update last activity time
+            // Update server-side session
             Session::put('last_activity', time());
+
+            // Regenerate session to extend it server-side
+            Session::migrate(true);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Session extended successfully',
-                'new_expiry' => time() + (30 * 60) // 30 minutes from now
+                'server_time' => time(),
+                'new_expiry' => time() + (30 * 60),
+                'session_id' => session()->getId()
             ]);
         }
 
@@ -49,19 +54,20 @@ class SessionController extends Controller
         if (Auth::check()) {
             $user = Auth::user();
 
-            // Skip for admin users - check both email and role
+            // Skip for admin users
             if ($user->email === 'admin@example.com' ||
                 ($user->role ?? null) === 'ADMIN' ||
                 ($user->is_admin ?? false)) {
                 return response()->json(['success' => true, 'message' => 'Admin activity tracking skipped']);
             }
 
-            // Update last activity time
+            // Update last activity time on server
             Session::put('last_activity', time());
 
             return response()->json([
                 'success' => true,
-                'timestamp' => time()
+                'timestamp' => time(),
+                'session_id' => session()->getId()
             ]);
         }
 
@@ -76,7 +82,7 @@ class SessionController extends Controller
         if (Auth::check()) {
             $user = Auth::user();
 
-            // Skip for admin users - check both email and role
+            // Skip for admin users
             if ($user->email === 'admin@admin.com' ||
                 ($user->role ?? null) === 'ADMIN' ||
                 ($user->is_admin ?? false)) {
@@ -95,7 +101,9 @@ class SessionController extends Controller
                 'success' => true,
                 'remaining_seconds' => max(0, $remaining),
                 'last_activity' => $lastActivity,
-                'will_expire_at' => $lastActivity + $timeout
+                'will_expire_at' => $lastActivity + $timeout,
+                'session_id' => session()->getId(),
+                'server_time' => time()
             ]);
         }
 
