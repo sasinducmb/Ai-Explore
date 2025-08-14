@@ -28,6 +28,9 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
+        // Clear any existing session data
+        $request->session()->invalidate();
+
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
 
@@ -35,7 +38,8 @@ class AuthController extends Controller
             if ($user->role === 'ADMIN') {
                 return redirect()->route('admin.dashboard');
             } elseif ($user->role === 'PARENT') {
-                return redirect()->route('home');
+                // Add script to clear localStorage for fresh session
+                return redirect()->route('home')->with('clear_session_storage', true);
             } else {
                 Auth::logout();
                 return redirect()->route('login.form')->withErrors(['email' => 'Role not authorized.']);
@@ -78,6 +82,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login.form');
+        return redirect()->route('login.form')->with('message', 'You have been logged out successfully.');
     }
 }
