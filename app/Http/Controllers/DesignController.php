@@ -328,7 +328,7 @@ class DesignController extends Controller
 
                 try {
                     $promptLower = strtolower($prompt);
-                    $requiredKeywords = ['beach', 'family', 'summer', 'vacation', 'ocean', 'sea', 'sand', 'sun', 'holiday', 'relaxing', 'swimming', 'waves', 'coast', 'tropical', 'sunny', 'water', 'seaside', 'trip', 'enjoy'];
+                    $requiredKeywords = ['helping', 'elderly', 'stairs', 'kindness', 'assistance', 'support', 'care', 'old', 'senior', 'aid', 'compassion', 'respect', 'gentle', 'walking', 'climbing', 'steps', 'guidance', 'service'];
                     $foundKeywords = [];
                     foreach ($requiredKeywords as $keyword) {
                         if (strpos($promptLower, $keyword) !== false) {

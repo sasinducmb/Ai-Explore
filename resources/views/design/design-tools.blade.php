@@ -118,11 +118,14 @@
                 </h2>
                 <p
                     class="text-gray-600 font-medium poppins max-w-3xl mx-auto mb-10 text-base sm:text-lg leading-relaxed animate-fade-in-delay">
-                    Kids receive a few words related to a secret story image. They must use those words to prompt an AI
-                    image generator and create an image that matches the hidden story.
+                    Kids will see two images: Image A (original) and Image B (target). The second image looks similar to the
+                    first but has a few changes. Your task is to figure out what’s different and create a prompt that would
+                    transform Image A into Image B.
                 </p>
                 <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
-                    <img src="{{ asset('asset/img/image_a7.jpeg') }}" alt="Image A"
+                    <img src="{{ asset('asset/img/image_a.jpeg') }}" alt="Image A"
+                        class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                    <img src="{{ asset('asset/img/image_b.jpeg') }}" alt="Image B"
                         class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
                 </div>
                 <div
@@ -133,16 +136,16 @@
                     <ul class="list-disc pl-6 text-gray-700 text-base sm:text-lg space-y-4">
                         <li class="flex items-center">
                             <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
-                            <span>Read Your Clues.(3–5 secret words that relate to a hidden story
-                                image)</span>
+                            <span>Carefully look at Image A and Image B.</span>
                         </li>
                         <li class="flex items-center">
                             <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
-                            <span>Think About the Scene Write an AI Prompt</span>
+                            <span>Find the differences – what new things are added, removed, or changed?</span>
                         </li>
                         <li class="flex items-center">
                             <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
-                            <span>Write an AI Prompt</span>
+                            <span>Type a prompt below using clear and simple words (e.g.“remove the tree,” “make the sky
+                                sunny”).</span>
                         </li>
                     </ul>
                 </div>
@@ -350,14 +353,11 @@
                 </h2>
                 <p
                     class="text-gray-600 font-medium poppins max-w-3xl mx-auto mb-10 text-base sm:text-lg leading-relaxed animate-fade-in-delay">
-                    Kids will see two images: Image A (original) and Image B (target). The second image looks similar to the
-                    first but has a few changes. Your task is to figure out what's different and create a prompt that would
-                    transform Image A into Image B.
+                    Kids receive a few words related to a secret story image. They must use those words to prompt an AI
+                    image generator and create an image that matches the hidden story.
                 </p>
                 <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
-                    <img src="{{ asset('asset/img/image_a.jpeg') }}" alt="Image A"
-                        class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
-                    <img src="{{ asset('asset/img/image_b.jpeg') }}" alt="Image B"
+                    <img src="{{ asset('asset/img/image_a7.jpeg') }}" alt="Image A"
                         class="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto rounded-lg shadow-md hover:shadow-lg transition duration-300">
                 </div>
                 <div
@@ -368,16 +368,16 @@
                     <ul class="list-disc pl-6 text-gray-700 text-base sm:text-lg space-y-4">
                         <li class="flex items-center">
                             <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
-                            <span>Carefully look at Image A and Image B.</span>
+                            <span>Read Your Clues.(3–5 secret words that relate to a hidden story
+                                image)</span>
                         </li>
                         <li class="flex items-center">
                             <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
-                            <span>Find the differences – what new things are added, removed, or changed?</span>
+                            <span>Think About the Scene Write an AI Prompt</span>
                         </li>
                         <li class="flex items-center">
                             <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
-                            <span>Type a prompt below using clear and simple words (e.g."remove the tree," "make the sky
-                                sunny").</span>
+                            <span>Write an AI Prompt</span>
                         </li>
                     </ul>
                 </div>
@@ -604,9 +604,8 @@
     <div id="result-popup"
         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center {{ isset($showPopup) && $showPopup ? '' : 'hidden' }} z-50">
         <div
-            class="bg-white p-4 sm:p-6 rounded-lg shadow-lg text-center w-full max-w-md sm:max-w-lg transform transition-all duration-300">
-            <div id="result-image" class="mb-4">
-                <img id="popup-image" src="" alt="Result" class="w-64 h-64 mx-auto object-contain">
+            class="bg-white p-4 sm:p-6 rounded-lg shadow-lg text-center w-full max-w-xs sm:max-w-sm transform transition-all duration-300">
+            <div id="result-icon" class="text-5xl sm:text-6xl mb-4">{{ isset($isCorrect) && $isCorrect ? '😊' : '😢' }}
             </div>
             <p id="result-message" class="text-base sm:text-lg font-medium text-gray-800">
                 {{ $resultMessage ?? 'An error occurred. Please try again.' }}
@@ -659,124 +658,6 @@
             const TOTAL_QUESTIONS = 10;
             let currentQuestion = parseInt(currentQuestionInput.value);
 
-            // Define the action URL to avoid conflicts
-            const SUBMIT_URL = '{{ route("design.submit") }}';
-
-            // Function to show result popup with appropriate image
-            function showResultPopup(isCorrect, message, marks) {
-                const popup = document.getElementById('result-popup');
-                const popupImage = document.getElementById('popup-image');
-                const resultMessage = document.getElementById('result-message');
-
-                console.log('Showing popup with:', { isCorrect, message, marks });
-
-                // Clear any existing content
-                const existingEmoji = document.getElementById('popup-emoji');
-                if (existingEmoji) {
-                    existingEmoji.remove();
-                }
-
-                // Try to load image, fallback to emoji if it fails
-                let imageSrc = '';
-                let fallbackEmoji = '';
-
-                if (isCorrect) {
-                    imageSrc = '{{ asset("asset/img/svg/happy.gif") }}';
-                    fallbackEmoji = '😊';
-                } else if (marks >= 3) {
-                    imageSrc = '{{ asset("asset/img/svg/moderate.gif") }}';
-                    fallbackEmoji = '🤔';
-                } else {
-                    imageSrc = '{{ asset("asset/img/svg/sad.gif") }}';
-                    fallbackEmoji = '😢';
-                }
-
-                console.log('Attempting to load image:', imageSrc);
-
-                // Test if image exists, otherwise use emoji
-                const testImage = new Image();
-                testImage.onload = function() {
-                    console.log('Image loaded successfully');
-                    popupImage.src = imageSrc;
-                    popupImage.style.display = 'block';
-                    popupImage.className = 'w-64 h-64 mx-auto object-contain';
-                };
-                testImage.onerror = function() {
-                    console.warn('Image not found, using emoji fallback');
-                    showEmojiInstead();
-                };
-
-                // Function to show emoji fallback
-                function showEmojiInstead() {
-                    popupImage.style.display = 'none';
-                    // Create emoji element
-                    const emojiDiv = document.createElement('div');
-                    emojiDiv.className = 'text-10xl mb-4';
-                    emojiDiv.textContent = fallbackEmoji;
-                    emojiDiv.id = 'popup-emoji';
-
-                    popupImage.parentNode.insertBefore(emojiDiv, popupImage);
-                }
-
-                // Load the image
-                testImage.src = imageSrc;
-
-                resultMessage.textContent = message;
-                popup.classList.remove('hidden');
-
-                // Removed auto-close functionality - popup now only closes when user clicks the close button
-            }
-
-            // Function to submit form via AJAX
-            function submitFormAjax(formElement) {
-                const formData = new FormData(formElement);
-
-                console.log('Submitting to URL:', SUBMIT_URL);
-                console.log('Form data:', Object.fromEntries(formData));
-
-                fetch(SUBMIT_URL, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    }
-                })
-                .then(response => {
-                    console.log('Response status:', response.status);
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Response data:', data);
-                    if (data.success) {
-                        // Show popup with result
-                        showResultPopup(data.isCorrect || false, data.message || 'Response received', data.marks || 0);
-
-                        // Update current question if needed
-                        if (data.currentQuestion && data.currentQuestion !== currentQuestion) {
-                            currentQuestion = data.currentQuestion;
-                            currentQuestionInput.value = currentQuestion;
-                            // Wait for user to close popup manually before updating navigation
-                            const checkPopupClosed = setInterval(() => {
-                                if (popup.classList.contains('hidden')) {
-                                    clearInterval(checkPopupClosed);
-                                    updateNavigation();
-                                }
-                            }, 100);
-                        }
-                    } else {
-                        showResultPopup(false, data.message || 'An error occurred.', 0);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showResultPopup(false, 'An error occurred. Please try again.', 0);
-                });
-            }
-
             // Update button visibility and text based on current question
             function updateNavigation() {
                 document.querySelectorAll('[id^="question-"]').forEach(el => el.classList.add('hidden'));
@@ -787,31 +668,6 @@
 
             // Initial setup
             updateNavigation();
-
-            // Handle form submissions with AJAX - use more specific selectors
-            const formsToHandle = [
-                'draw-form',
-                'clue-form',
-                'transform-form',
-                'transform-form-4',
-                'transform-form-5',
-                'transform-form-6',
-                'transform-form-7',
-                'transform-form-8',
-                'transform-form-9',
-                'transform-form-10'
-            ];
-
-            formsToHandle.forEach(formId => {
-                const form = document.getElementById(formId);
-                if (form) {
-                    form.addEventListener('submit', function(e) {
-                        e.preventDefault();
-                        console.log('Form submitted:', formId);
-                        submitFormAjax(this);
-                    });
-                }
-            });
 
             // Next button click
             nextButton.addEventListener('click', function(e) {
